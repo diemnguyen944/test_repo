@@ -35,7 +35,7 @@ This project addresses this critical gap by creating a federated data ecosystem.
 7.  **FR7: mPass-Integrated Partner Service Connection:** A user must be able to connect Askii.ai to third-party services that are MCP-enabled and already integrated with mPass, using the same mPass authentication and consent flow (FR4, FR5, FR6).
 8.  **FR8: MO Data Retrieval:** Askii.ai must be able to detect when a user query requires data from a connected MO and invoke the appropriate MCP tool(s) to retrieve it.
 9.  **FR9: mPass-Integrated Partner Data Retrieval:** Askii.ai must be able to invoke the MCP tools of a connected partner service to retrieve data or execute actions.
-10. **FR10: Connection Management:** A user must be able to view their active MCP server connections (both MO and partner) and revoke access for any connection from within their mPass account settings.
+10. **FR10: Connection Management:** A user must be able to view their active MCP server connections (both MO and partner) and revoke access for any connection from within Askii.ai.
 
 ### Non-Functional
 

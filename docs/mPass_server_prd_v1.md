@@ -119,7 +119,7 @@ The initial UI components will be delivered as part of the Askii.ai responsive w
 
 ### Epic 2: mPass Authentication and Consent
 
-*   **Goal:** Integrate the existing mPass authentication and implement consent to enable connections to MO Data MCP servers and mPass-integrated partner services. Deliver consent UI, secure token storage, and connection management (view/revoke).
+*   **Goal:** Integrate the existing mPass authentication and implement consent to enable connections to MO Data MCP servers and MCP-enabled mPass-integrated partner services. Deliver consent UI, secure token storage, and connection management (view/revoke).
 
 ### Epic 3: End-to-End MO Data MCP Server Connection & Data Retrieval
 

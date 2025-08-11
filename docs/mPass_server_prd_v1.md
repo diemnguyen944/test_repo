@@ -123,7 +123,7 @@ The initial UI components will be delivered as part of the Askii.ai responsive w
 
 ### Epic 3: MO Data Retrieval
 
-*   **Goal:** Integrate the MO Data MCP server package with Askii.ai to achieve complete end-to-end functionality. This includes connecting to deployed MO servers via mPass authentication and consent, implementing intelligent query detection, invoking appropriate MCP tools, and integrating retrieved MO data into contextual AI responses.
+*   **Goal:** Integrate the MO Data MCP server with Askii.ai to achieve complete end-to-end functionality. This includes connecting to a deployed MO server via mPass authentication and consent, implementing intelligent query detection, invoking appropriate MCP tools, and integrating retrieved MO data into contextual AI responses.
 
 ### Epic 4: MCP-Enabled mPass-Integrated Partner Service Integration
 

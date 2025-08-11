@@ -1,20 +1,20 @@
 # mPass Personal Data Framework UI/UX Specification
-
+## Change Log
 | Date        | Version | Description | Author      |
 |-------------|---------|-------------|-------------|
-| 11 Aug 2025 | 1.0     |             | Diem Nguyen |
+| 11 Aug 2025 | 1.0     |     Initial Draft        | Diem Nguyen |
 
-## 1. Introduction
+## Introduction
 
 This document defines the user experience goals, information architecture, user flows, and visual design specifications for the **mPass Personal Data Framework's** user interface. It serves as the foundation for visual design and frontend development, ensuring a cohesive and user-centered experience.
 
 The primary goal is to transform Askii.ai from a generic assistant into a hyper-personalized companion by solving the "Amnesiac AI" problem, allowing it to securely access user data with their full consent. The user experience for connecting these data sources must be **secure, transparent, and simple**.
 
-### 1.1. Target User Personas
+### Target User Personas
 
 Based on the PRD, our primary user is a tech-savvy individual who values efficiency and is an early adopter of AI tools, but is frustrated by their lack of context and is cautious about data privacy. They need a system they can trust implicitly.
 
-### 1.2. Usability Goals
+### Usability Goals
 
 - **Trustworthiness**: Every screen, interaction, and word must be designed to build and reinforce user trust. The process must feel transparent and secure, leveraging the established trust of the mPass brand.
 
@@ -22,7 +22,7 @@ Based on the PRD, our primary user is a tech-savvy individual who values efficie
 
 - **Efficiency**: The consent process should be as frictionless as possible. The entire connection and consent flow should take **under 3 seconds**, excluding user interaction time (NFR3).
 
-### 1.3. Design Principles
+### Design Principles
 
 1. **Trust is the Default**: Design every component to be inherently reassuring. Use clear language, familiar patterns, and visual cues from the trusted mPass brand.
 
@@ -30,11 +30,11 @@ Based on the PRD, our primary user is a tech-savvy individual who values efficie
 
 3. **The User is Always in Control**: The user must feel empowered to grant, view, and revoke access easily and instantly. The UI must constantly reinforce their agency (FR10).
 
-## 2. Information Architecture
+## Information Architecture
 
 The information architecture is for an *embedded experience*. Its components are accessed contextually from within existing application structures.
 
-### 2.1. Site Map / Screen Inventory
+### Site Map / Screen Inventory
 
 This diagram illustrates the key screens and the required flow, showing that **authentication happens before consent** is granted (FR4, FR5).
 
@@ -69,7 +69,7 @@ graph TD;
     J -- "Confirms" --> E;
 ```
 
-### 2.2. Navigation Structure
+### Navigation Structure
 
 - **Primary Navigation**: The mPass framework does not introduce new primary navigation paradigms. Its user-facing components are accessed contextually from within existing application structures:
 
@@ -81,11 +81,11 @@ graph TD;
 
 - **Breadcrumb Strategy**: Not applicable for the modal-based consent flow. Standard breadcrumbs should be used for the management dashboard if it is nested within a settings hierarchy (e.g., Home > Settings > Connected Services).
 
-## 3. User Flows
+## User Flows
 
 Based on the PRD, there are two critical user flows for the MVP.
 
-### 3.1. Flow 1: MO Data MCP Server Connection (The "Happy Path")
+### Flow 1: MO Data MCP Server Connection (The "Happy Path")
 
 - **User Goal**: To seamlessly and securely connect their Membership Organization (MO) data to Askii.ai.
 - **Entry Points**: The user makes a query in Askii.ai that requires data from an unconnected MO (Story 2.5).
@@ -134,7 +134,7 @@ sequenceDiagram
 
 - **Network Interruption**: If the user's network connection is lost during the flow, the UI should attempt to handle it gracefully. If an action cannot be completed, a message like "Network connection lost. Please check your connection and try again." should be displayed.
 
-### 3.2. Flow 2: Managing Connected Services
+### Flow 2: Managing Connected Services
 
 - **User Goal**: To easily view all connected services and revoke access when needed (Story 2.4).
 - **Entry Points**: User navigates to "Settings" > "MCP Services" in Askii.ai.
@@ -175,11 +175,11 @@ graph TD
 
 - **Toggle Fails**: If the user flips the activation toggle but the state change fails on the backend, the toggle should revert to its original position, accompanied by a brief error message explaining the failure.
 
-## 4. Wireframes & Mockups
+## Wireframes & Mockups
 
 The source of truth for all high-fidelity mockups and prototypes will be a Figma project, created based on these specifications. The following conceptual layouts establish the core structure.
 
-### 4.1. Key Screen Layouts
+### Key Screen Layouts
 
 #### Screen 1: The Contextual Connection Prompt (within Askii.ai)
 
@@ -221,15 +221,15 @@ The source of truth for all high-fidelity mockups and prototypes will be a Figma
     - **Activation Toggle (On/Off Switch)**: A toggle to temporarily pause the integration
     - **Action Buttons**: "Disconnect" (with confirmation dialog) or "Connect"
 
-## 5. Branding & Style Guide
+## Branding & Style Guide
 
 The visual identity must be a harmonious blend of the trusted mPass brand and the existing dark, professional theme of Askii.ai.
 
-### 5.1. Visual Identity
+### Visual Identity
 
 - **Brand Guidelines**: The UI will use mPass and partner MO logos to establish trust. However, the overall color scheme, typography, and component styling will be adapted to match the host application's dark theme.
 
-### 5.2. Color Palette (Dark Theme Adaptation)
+### Color Palette (Dark Theme Adaptation)
 
 This palette should be derived from the existing Askii.ai interface to ensure a seamless look and feel.
 
@@ -244,28 +244,28 @@ This palette should be derived from the existing Askii.ai interface to ensure a 
 | Success         | #28A745                   | Success messages, "Connected" status                          |
 | Error           | #DC3545                   | Error messages, destructive action text/icons                |
 
-### 5.3. Typography
+### Typography
 
 - **Font Families**:
   - **Primary**: We will continue with a **clean, sans-serif system font** (like Inter, Roboto, or similar) to match the existing Askii.ai application.
 
 - **Type Scale**: The existing type scale from Askii.ai should be adopted for all components to ensure a perfect match.
 
-### 5.4. Iconography
+### Iconography
 
 - **Icon Library**: We will use a simple, single-color, outlined icon set (like Heroicons or Lucide) to match the style of the existing icons in the Askii.ai UI.
 
-### 5.5. Spacing & Layout
+### Spacing & Layout
 
 - **Grid & Spacing**: We will adopt the existing spacing system (which appears to be an 8pt grid) from Askii.ai for all margins and padding to ensure rhythmic consistency.
 
 - **Component Style**: All components, especially buttons and modals, will use rounded corners to match the aesthetic of the chat input and other UI elements.
 
-## 6. Responsiveness Strategy
+## Responsiveness Strategy
 
 We will take a **mobile-first** approach.
 
-### 6.1. Breakpoints
+### Breakpoints
 
 | Breakpoint | Min Width | Target Devices                                          |
 |------------|-----------|--------------------------------------------------------|
@@ -273,7 +273,7 @@ We will take a **mobile-first** approach.
 | Tablet     | 768px     | iPads, Android tablets (portrait & landscape)         |
 | Desktop    | 1024px    | Laptops, desktop monitors                              |
 
-### 6.2. Adaptation Patterns
+### Adaptation Patterns
 
 - **Layout Changes**:
   - **Consent Modal**: On **Mobile**, the modal will take up the full screen to maximize readability. On **Tablet and Desktop**, it will be a centered modal with a backdrop.
@@ -285,44 +285,44 @@ We will take a **mobile-first** approach.
 - **Content Priority**:
   - On smaller screens, we will ensure that the most critical information (who is requesting access, what they want) and the primary actions ("Allow"/"Deny") are always visible without scrolling. Less critical explanatory text may be positioned lower in the visual hierarchy.
 
-## 7. Animation & Micro-interactions
+## Animation & Micro-interactions
 
 Motion design will be subtle, professional, and purposeful.
 
-### 7.1. Motion Principles
+### Motion Principles
 
 - **Responsive & Quick**: Animations should be fast (under 300ms) and directly responsive to user input.
 - **Informative, Not Decorative**: Motion will be used to provide feedback and guide focus.
 - **Performance First**: All animations must be performant, primarily using CSS transforms.
 
-### 7.2. Key Animations
+### Key Animations
 
 - **Modal Entrance/Exit**: The consent modal will fade in and scale up slightly upon opening.
 - **Button Press**: Buttons will subtly scale down when pressed.
 - **Loading States**: When an action triggers a server request, the button that was clicked will display a subtle loading spinner inside it and become disabled.
 
-## 8. Performance Considerations
+## Performance Considerations
 
 Performance is a critical feature for building trust.
 
-### 8.1. Performance Goals
+### Performance Goals
 
 - **Largest Contentful Paint (LCP)**: Under 2.5 seconds for the consent modal and dashboard.
 - **Interaction to Next Paint (INP)**: The UI must respond to user input in under 200ms to feel instantaneous.
 - **Animation FPS**: All animations must maintain a steady 60 frames per second (FPS).
 
-### 8.2. Design Strategies
+### Design Strategies
 
 - **Optimized Assets**: All images and logos will be delivered in modern, compressed formats (like SVG or WebP).
 - **Code Splitting**: The JavaScript and CSS for the mPass components will be bundled separately and loaded only when needed.
 - **No Heavy Dependencies**: The component library will be built with minimal external dependencies.
 
-## 9. Accessibility Requirements
+## Accessibility Requirements
 
 - **Standard**: **WCAG 2.1 Level AA**. All components and user flows must meet this standard as a minimum requirement.
 - **Key Requirements**: High color contrast ratios, visible keyboard focus indicators, screen reader support with proper ARIA labels, and logical tab order are mandatory.
 
-## 10. Next Steps
+## Next Steps
 
 1. **Stakeholder Review**: Review this specification with Product and Engineering.
 2. **High-Fidelity Mockups**: Create detailed mockups and prototypes in Figma.

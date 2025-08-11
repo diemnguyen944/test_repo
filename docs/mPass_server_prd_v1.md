@@ -125,7 +125,7 @@ The initial UI components will be delivered as part of the Askii.ai responsive w
 
 *   **Goal:** Integrate the MO Data MCP server package with Askii.ai to achieve complete end-to-end functionality. This includes connecting to deployed MO servers via mPass authentication and consent, implementing intelligent query detection, invoking appropriate MCP tools, and integrating retrieved MO data into contextual AI responses.
 
-### Epic 4: Partner Service Integration
+### Epic 4: MCP-Enabled mPass-Integrated Partner Service Integration
 
 *   **Goal:** Extend the proven mPass authentication and MCP integration pattern to support third-party services that are MCP-enabled and already integrated with mPass. This delivers the second core capability of the MVP and completes the full framework scope.
 

@@ -23,7 +23,7 @@ As AI becomes more integrated into daily life, the demand for hyper-personalizat
 ## Proposed Solution
 
 **Core Concept and Approach:**
-We will build the **mPass Personal Data Framework**, a federated data ecosystem that allows Askii.ai to function as a hyper-personalized AI assistant. Instead of creating a centralized data vault, this framework enables Askii.ai to securely access a user's distributed personal data where it already lives (e.g., in their MO's systems, Gmail, etc.) via MCP (Model Context Protocol). Every data access request is authenticated and explicitly consented to in real-time by the user through their mPass, which is anchored in the trusted relationship they have with their Membership Organization (MO).
+We will build the **mPass Personal Data Framework**, a federated data ecosystem that allows Askii.ai to function as a hyper-personalized AI assistant. Instead of creating a centralized data vault, this framework enables Askii.ai to securely access a user's distributed personal data where it already lives (e.g., in their MO's systems) via MCP (Model Context Protocol). Users authenticate and provide explicit consent through their mPass when connecting to each MCP server, establishing an ongoing trusted connection anchored in their relationship with their Membership Organization (MO).
 
 **Key Differentiators from Existing Solutions:**
 - **Leverages Existing Trust:** The framework is built on the pre-existing, trusted relationship between the user and their MO, overcoming the major trust hurdle faced by new, standalone "memory vault" services.
@@ -41,7 +41,7 @@ The mPass Personal Data Framework will power an Askii.ai that truly knows and se
 
 ### **Primary User Segment: The "Delegator" Professional**
 
-*   **Profile:** Tech-savvy professionals, managers, and knowledge workers who are existing members of a partner MO (e.g., a telco, airline, or professional association). They are early adopters of AI tools but are frustrated by the need to constantly provide context.
+*   **Profile:** Tech-savvy professionals, managers, and knowledge workers who are existing members of a partner MO (e.g., a telco, airline, or professional association,...). They are early adopters of AI tools but are frustrated by the need to constantly provide context.
 *   **Behaviors:** They live in their email and calendars, manage complex projects, and interact with multiple SaaS tools daily. They value efficiency and are willing to adopt new technology if it saves them significant time and mental energy.
 *   **Needs & Pains:**
     *   They need an AI that "just knows" the context of their work and personal life without constant re-explanation.
@@ -63,10 +63,10 @@ The mPass Personal Data Framework will power an Askii.ai that truly knows and se
 
 ### **Business Objectives**
 
-*   **Ecosystem Activation (Year 1):** Onboard at least 3 flagship Membership Organizations (MOs) and 5 strategic third-party data partners to the mPass Personal Data Framework.
-*   **Drive Askii.ai Adoption (Year 1):** Achieve a 40% adoption rate of the hyper-personalization features among the active Askii.ai users from our partner MOs.
-*   **Elevate MO Stickiness (Year 2):** Reduce member churn by 15% for partner MOs who actively promote the framework to their user base.
-*   **Establish Strategic Moat (Year 2):** Position the mPass framework as the leading trusted, federated AI data solution, securing partnerships that competitors cannot easily replicate.
+*   **Ecosystem Activation:** Onboard at least 3 flagship Membership Organizations (MOs) and 5 strategic third-party data partners to the mPass Personal Data Framework.
+*   **Drive Askii.ai Adoption:** Achieve a 40% adoption rate of the hyper-personalization features among the active Askii.ai users from our partner MOs.
+*   **Elevate MO Stickiness:** Reduce member churn by 15% for partner MOs who actively promote the framework to their user base.
+*   **Establish Strategic Moat:** Position the mPass framework as the leading trusted, federated AI data solution, securing partnerships that competitors cannot easily replicate.
 
 ### **User Success Metrics**
 
@@ -78,37 +78,52 @@ The mPass Personal Data Framework will power an Askii.ai that truly knows and se
 ### **Key Performance Indicators (KPIs)**
 
 *   **Partner Adoption Rate:** Number of new MO and Third-Party partners joining the framework per quarter. (Target: 1 MO, 2 partners per quarter after launch).
-*   **Federated Queries per User:** The average number of queries per week that successfully utilize data from at least two different sources (e.g., MO + Gmail). (Target: 5 federated queries/user/week).
+*   **Federated Queries per User:** The average number of queries per week that successfully utilize data from at least two different sources (e.g., MO). (Target: 5 federated queries/user/week).
 *   **Consent Rate:** Percentage of users who approve a new data connection when prompted contextually by the AI. (Target: >60%).
 *   **Ecosystem Health Score:** A composite metric tracking API uptime, data sync latency, and successful consent handshakes across the federated network. (Target: >99.9% uptime).
 
 ## MVP Scope
 
-### **Core Features (Must Have)**
+For the MVP, we will deliver two core user-facing capabilities, built on a common technical foundation.
 
-*   **MO Data MCP Server (Single Data Point):** A production-ready MCP server that exposes a single, high-value data point from the MO's database (e.g., Transaction History, as we brainstormed). This is the foundational trust anchor.
-*   **mPass Consent Gateway:** The core service that handles the consent flow. It must be able to generate the consent UI, manage the secure handshake between Askii.ai, the MO, and the third-party service, and securely store consent tokens.
-*   **Askii.ai Integration (Single Third-Party Service):** Askii.ai must be able to detect when a query requires data from the MO *and* one specific, high-value third-party service (e.g., Google Calendar). It must be able to trigger the mPass consent flow for this single service.
-*   **End-to-End User Consent Flow:** The full, multi-screen user journey we storyboarded, from the contextual AI prompt to the final success confirmation, must be flawlessly implemented.
-*   **Basic Consent Management Dashboard:** A simple interface within the mPass app or Askii.ai where a user can see which services they have connected and have a one-click option to "disconnect" or revoke access.
+### Capability 1: Accessing Membership Organization (MO) Data
+
+This capability allows Askii.ai to securely access a user's data from their MO.
+
+*   **MO Data MCP Server:** We will produce a self-contained **MO Data MCP Server Package** for MOs to deploy within their own infrastructure. This ensures MOs retain full data control and compliance, while Moneta's role is strictly limited to package development and maintenance, with no access to member data.
+*   **MO Data MCP Server Connection via mPass:** To enable data access, the user performs a connection to their MO's MCP server. This follows the flow: the user authenticates with mPass and then approves a consent screen detailing the permissions requested.
+*   **Intelligent Data Retrieval:** Once the connection is established, Askii.ai will intelligently detect when a user's query requires MO data (e.g., transaction history, member status) and will make the appropriate MCP tool calls to retrieve it.
+
+### Capability 2: Connecting to mPass-Integrated Partner Services
+
+This capability allows Askii.ai to securely access data and resources from third-party services that are MCP-enabled and have integrated with mPass.
+
+*   **MCP-Enabled Partner Services:** To be supported, third-party services must expose their data and functions via an MCP server and use mPass for authentication.
+*   **Partner Service Connection via mPass:** Users connect these services using the same trusted mPass flow: authenticating with their mPass and approving a consent screen that details the requested permissions.
+*   **Utilizing Partner Services:** Once connected, Askii.ai can invoke the partner's specific MCP tools, allowing it to access their unique data and resources to provide richer, more comprehensive answers.
 
 ### **Out of Scope for MVP**
 
-*   **Multiple Third-Party Integrations:** The MVP will focus on proving the model with just *one* strategic third-party partner (e.g., Google Calendar). Onboarding a second partner is a fast-follow, not part of the initial MVP.
-*   **Advanced Data Synthesis:** The AI's ability to combine data will be functional but not highly advanced. It will answer direct queries that require two sources, but won't yet provide proactive, unsolicited insights.
-*   **Granular, Sub-Service Permissions:** The initial consent will be at the service level (e.g., "access your calendar"). The ability to grant permission to only *some* calendars or *some* types of events will be a future enhancement.
+*   **Expansive mPass Consent Gateway:** A standalone, central gateway for all third-party services is explicitly out of scope. Consent is handled within the MO Data MCP server flow, and authentication for other services leverages existing MCP server capabilities.
+*   **Advanced Data Synthesis:** The AI's ability to combine data will be functional but not highly advanced. It will answer direct queries that require data, but won't yet provide proactive, unsolicited insights.
+*   **Granular, Sub-Service Permissions:** The initial consent will be at the service level. Granular permissions are a future enhancement.
 *   **Complex Consent Auditing:** While the system will log consent, a detailed, user-facing audit trail of every data access request is not part of the MVP.
 *   **MO-to-MO Data Portability:** The framework will not initially support transferring consent or data between different MOs.
 
 ### **MVP Success Criteria**
 
-The MVP will be considered a success when we can successfully demonstrate a single user asking a single question in Askii.ai that triggers a consent request for their MO data and a third-party service, have the user grant that consent via the mPass flow, and receive a correct, synthesized answer, with the entire flow feeling secure and intuitive.
+The MVP will be considered a success when we can clearly demonstrate the successful, end-to-end operation of both core capabilities:
+
+1.  **Successful MO Data Retrieval:** A user can ask a question in Askii.ai that requires data from their MO. This action should correctly trigger the one-time mPass connection flow (authenticate and consent), and result in Askii.ai providing a correct, contextual answer powered by the retrieved MO data.
+2.  **Successful Partner Service Connection:** A user can successfully connect a third-party, mPass-integrated service to Askii.ai. This must use the same mPass authentication and consent flow, resulting in a successfully established connection that the user can manage.
+
+Both user flows must feel secure, intuitive, and seamless.
 
 ## Post-MVP Vision
 
 ### **Phase 2 Features (Fast Follows)**
 
-*   **Expanded Partner Ecosystem:** Rapidly onboard the next 5-10 strategic third-party data partners, focusing on high-value domains like email, project management, and health. Develop a partner SDK and documentation to simplify and accelerate the integration process.
+*   **Expanded Partner Ecosystem:** With the core framework validated, rapidly onboard the next 5-10 strategic third-party partners. Develop a **Partner SDK and Onboarding Guide** to help new services build their own MCP servers and integrate with the mPass framework, accelerating ecosystem growth.
 *   **Granular Permission Controls:** Move beyond service-level consent to allow users to grant permissions for specific subsets of their data (e.g., only the "Work" calendar, only emails from a specific domain, only "read-only" access).
 *   **Proactive AI Insights:** Enhance the AI to not only answer direct questions but to proactively identify and surface insights by synthesizing data from multiple connected sources (e.g., "Your upcoming flight booking conflicts with a meeting on your work calendar").
 *   **User-Facing Consent Dashboard:** Build out the full consent management dashboard in the mPass app, including a detailed, user-friendly audit trail of all data access requests and approvals.
@@ -120,11 +135,7 @@ The long-term vision is to establish the mPass Personal Data Framework as the de
 *   **The Ecosystem becomes a Marketplace:** Third-party services will compete to offer unique data and tools through the framework, creating a vibrant marketplace of AI-ready capabilities for users to choose from.
 *   **mPass becomes the User's Digital Steward:** The mPass will evolve beyond a simple credential into the central control panel for a user's entire digital identity and AI-accessible memory, solidifying the MO's role as the most trusted entity in their members' digital lives.
 
-### **Expansion Opportunities**
 
-*   **Enterprise & B2B:** Adapt the framework for enterprise use cases, allowing employees to securely connect their corporate accounts (e.g., Salesforce, Jira, Teams) to a company-managed Askii.ai instance.
-*   **New Verticals:** Expand into highly regulated industries like healthcare and finance by building specialized, compliant versions of the consent and data access framework.
-*   **White-Labeling:** License the mPass consent framework to other large organizations who want to build their own trusted AI ecosystems for their customers or members.
 
 ## Technical Considerations
 
@@ -135,29 +146,29 @@ The long-term vision is to establish the mPass Personal Data Framework as the de
 
 ### **Technology Preferences**
 
-*   **Backend:** A microservices architecture is preferred, likely using Node.js/TypeScript or Go for high-performance services like the mPass Consent Gateway. Services should be containerized with Docker.
-*   **Database:** A combination of databases may be needed. A relational database (like PostgreSQL) for storing consent records and audit trails, and a key-value store (like Redis) for caching session tokens.
-*   **Hosting/Infrastructure:** The framework should be designed to be cloud-native, with a preference for AWS or a similar major cloud provider to ensure scalability and reliability.
+*   **Backend:** The **MO Data MCP Server Package** should be a self-contained, distributable application with a minimal, clearly defined set of external dependencies.
+*   **Database:** Askii.ai will require a database to securely store connection metadata and user consent tokens.
+*   **Hosting/Infrastructure:** The MO Data MCP Server Package must be designed to be cloud-agnostic, capable of running in any standard containerized environment.
 
 ### **Architecture Considerations**
 
-*   **Service Architecture:** A decoupled, microservices-based architecture is critical. Key services would include: 1) MO Data MCP Server, 2) mPass Consent Gateway, 3) Partner Integration Service, 4) Consent Audit Service.
-*   **Integration Requirements:** The system will require robust, secure APIs for interaction between Askii.ai, the mPass Consent Gateway, MOs' internal systems, and third-party MCP servers. All APIs must be authenticated.
-*   **Security/Compliance:** Security is paramount. All data in transit must be encrypted with TLS. All sensitive data at rest (like consent tokens) must be encrypted. The system must be designed for GDPR and CCPA compliance from day one, with a clear data processing agreement for partners.
+*   **Service Architecture:** The architecture consists of two main parts: 1) The **distributable MO Data MCP Server Package**, and 2) **Askii.ai's internal services** for managing connections, invoking MCP tools, and handling the user-facing experience. The consent flow is an integrated component of the connection process orchestrated by Askii.ai and the mPass service.
+*   **Integration Requirements:** The system will require robust, secure APIs for interaction between Askii.ai, the mPass authentication service, and the various deployed MCP servers (both MO and partner).
+*   **Security/Compliance:** Security is paramount. All data in transit must be encrypted with TLS. All sensitive data at rest (like connection tokens) must be encrypted. The MO Data MCP Server package must be built to the highest security standards, but the ultimate compliance of the deployed environment (GDPR, CCPA, etc.) is the responsibility of the MO.
 
 ## Constraints & Assumptions
 
 ### **Constraints**
 
-*   **Timeline:** A functional, end-to-end MVP must be ready for a pilot with at least one MO and one third-party partner within 9 months.
-*   **Resources:** The core framework development will be handled by a dedicated team of 5-7 engineers (backend, security, and integration specialists). This does not include the resources needed from partner MOs or third parties.
-*   **MO Technical Readiness:** We are constrained by the technical capabilities of our initial MO partners. The MVP design must be flexible enough to accommodate MOs with varying levels of API maturity.
+*   **Timeline:** A functional, end-to-end MVP must be ready for a pilot by November 2025.
+*   **Resources:** The core framework and package development will be handled by a dedicated team of 3 engineers. This does not include the resources needed from partner MOs for deployment and testing.
+*   **MO Technical Readiness:** We are constrained by the ability of our initial MO partners to deploy and operate containerized applications within their infrastructure. The package design must be as simple and dependency-free as possible.
 *   **Protocol Dependency:** The framework is fundamentally dependent on the MCP standard. Any limitations or immaturities in the protocol itself will be constraints on our system.
 
 ### **Key Assumptions**
 
-*   **MOs are Willing Partners:** We assume that MOs will see the strategic value in becoming "digital stewards" and will be willing to invest the necessary technical resources to integrate with the framework.
-*   **Third Parties Will Adopt MCP:** We assume that with the right incentives (access to a large, engaged user base), third-party services will see a positive ROI in building an MCP server and integrating with our mPass consent flow.
+*   **MOs Can Deploy Our Package:** We assume that MOs will see the strategic value in becoming "digital stewards" and will have the technical capability to deploy and maintain our standardized MCP server package.
+*   **Existing Partners for MVP:** We assume that we can launch the MVP with at least one strategic third-party service that is already MCP-enabled and integrated with mPass. The assumption of convincing new partners to adopt MCP is for the post-MVP phase.
 *   **Users Will Trust the MO Anchor:** We assume that the user's trust in their MO is transferable and will be sufficient to overcome their hesitation in connecting multiple, sensitive data sources to an AI.
 *   **Performance is Solvable:** We assume that the potential latency issues of a federated system can be acceptably mitigated through smart caching, asynchronous processing, and a robust infrastructure.
 *   **The "Amnesiac AI" is a High-Value Problem:** We assume that the problem of contextless AI is significant enough that users will go through a multi-step consent process to solve it.
@@ -166,23 +177,23 @@ The long-term vision is to establish the mPass Personal Data Framework as the de
 
 ### **Key Risks**
 
-*   **Ecosystem Adoption Risk (High):** The entire model hinges on convincing both MOs and third-party services to adopt MCP and integrate with our framework. If they perceive the cost/effort to be too high or the ROI to be too low, the ecosystem will fail to launch.
-*   **Technical Complexity Risk (High):** Building a secure, reliable, and low-latency federated consent and data access system is extremely complex. Any security flaw in the consent gateway could have catastrophic consequences for user trust and the brand.
-*   **Poor User Experience Risk (Medium):** If the consent flow is confusing, intrusive, or creates too much friction, users will simply not adopt it, regardless of the potential benefits. "Consent fatigue" is a major UX challenge to overcome.
-*   **Competitive Risk (Medium):** A major platform player (like Google, Apple, or a large identity provider like Okta) could launch a competing, proprietary AI memory framework, potentially leveraging their existing ecosystem to accelerate adoption and block us out.
+*   **Deployment & Operations Risk (High):** The success of the model hinges on MOs being able to successfully deploy, configure, and maintain the MCP server package. A complex installation process, unclear documentation, or high operational overhead could prevent adoption.
+*   **Technical Complexity Risk (High):** Building a secure, reliable, and easy-to-maintain distributable package that can run in diverse environments is extremely complex. A security flaw in the package could have catastrophic consequences, as it would be deployed across multiple independent infrastructures.
+*   **Poor User Experience Risk (Medium):** If the connection and consent flow is confusing, intrusive, or creates too much friction, users will simply not adopt it, regardless of the potential benefits. "Consent fatigue" is a major UX challenge to overcome.
+*   **Competitive Risk (Medium)**:A major platform player could launch a competing, proprietary AI memory framework, potentially leveraging their existing ecosystem to accelerate adoption and block us out.
 
 ### **Open Questions**
 
-*   **Partner Incentives:** What is the precise, quantifiable business case for a third-party service to join our ecosystem? What is the revenue share or value proposition we will offer them?
-*   **MO Onboarding:** What is the technical and business "playbook" for onboarding a new MO? What level of technical support will we need to provide them?
-*   **Data Governance & Liability:** In a federated model, who is ultimately liable for a data breach or misuse? How will data governance policies be enforced across dozens of independent partners?
-*   **User Support Model:** When a user's data sync fails, who do they contact for support? Askii.ai, their MO, or the third-party service? A clear support model is needed.
+*   **Partner Incentives:** Post-MVP, what is the precise business case for a new third-party service to build an MCP server and integrate with our ecosystem?
+*   **MO Onboarding Playbook:** What is the detailed technical and business "playbook" for onboarding a new MO? This must include deployment guides, security best practices, and the support model for the packaged server.
+*   **Data Governance & Liability:** In a federated model, who is ultimately liable for a data breach or misuse—Moneta as the package developer, or the MO as the host and operator? How will data governance policies be enforced?
+*   **User Support Model:** When a user's data sync fails, who do they contact for support? A clear, tiered support model involving Askii.ai, the MO, and the third-party service is needed.
 
 ### **Areas Needing Further Research**
 
 *   **MCP Protocol Maturity Assessment:** A deep technical dive into the current state of the MCP standard, its production-readiness, and the availability of developer tools.
-*   **Market Survey of Potential Partners:** Formal research to gauge the interest and perceived barriers to entry for both MOs and key third-party services (e.g., SaaS companies).
-*   **Legal and Compliance Framework:** A thorough legal review to develop a standardized data processing agreement and define the liability and governance model for all ecosystem partners.
+*   **MO Deployment Infrastructure Survey:** Formal research to understand the typical containerization and deployment infrastructure available at our target MOs to ensure our package is compatible.
+*   **Legal and Compliance Framework:** A thorough legal review to develop a standardized **Software Distribution and Data Processing Agreement** that clearly defines the liability and governance model for MOs deploying the package.
 *   **User Trust and Consent UX Study:** Formal user research and usability testing focused on the consent flow to ensure it is clear, trustworthy, and minimizes friction.
 
 ## Next Steps

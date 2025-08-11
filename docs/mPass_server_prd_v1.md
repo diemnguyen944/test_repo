@@ -307,14 +307,14 @@ so that **I get personalized, contextual answers while understanding what data w
 4. Sensitive data handled appropriately - no unnecessary exposure of private details
 5. Fallback responses when MO data is unavailable, with explanation of limitations
 
-## Epic 4: Partner Service Integration
+## Epic 4: MCP-Enabled mPass-Integrated Partner Service Integration
 
 **Epic Goal:** Extend the proven mPass authentication and MCP integration pattern to support third-party services that are MCP-enabled and already integrated with mPass. This delivers the second core capability of the MVP and completes the full framework scope.
 
 ### Story 4.1: Partner Authentication and Tool Integration
 
 As a **user**,
-I want **to connect to a partner service using the same mPass flow and access their tools seamlessly**,
+I want **to connect to a MCP-enabled mPass-integrated service using the same mPass flow and access their tools seamlessly**,
 so that **I have a consistent experience across all connected services**.
 
 #### Acceptance Criteria
@@ -328,7 +328,7 @@ so that **I have a consistent experience across all connected services**.
 ### Story 4.2: Basic Partner Data Usage in Responses
 
 As a **user**,
-I want **Askii.ai to use data from connected partner services in my responses**,
+I want **Askii.ai to use data from connected MCP-enabled mPass-integrated services in my responses**,
 so that **I get enhanced answers that include information from my connected third-party services**.
 
 #### Acceptance Criteria

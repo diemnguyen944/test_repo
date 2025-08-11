@@ -35,7 +35,7 @@ This project addresses this critical gap by creating a federated data ecosystem.
 7.  **FR7: mPass-Integrated Partner Service Connection:** A user must be able to connect Askii.ai to third-party services that are MCP-enabled and already integrated with mPass, using the same mPass authentication and consent flow (FR4, FR5, FR6).
 8.  **FR8: MO Data Retrieval:** Askii.ai must be able to detect when a user query requires data from a connected MO and invoke the appropriate MCP tool(s) to retrieve it.
 9.  **FR9: mPass-Integrated Partner Data Retrieval:** Askii.ai must be able to invoke the MCP tools of a connected partner service to retrieve data or execute actions.
-10. **FR10: Connection Management:** A user must be able to view their active MCP server connections (both MO and partner) and revoke access for any connection from within their mPass account settings.
+10. **FR10: Connection Management:** A user must be able to view their active MCP server connections (both MO and partner) and revoke access for any connection from within Askii.ai.
 
 ### Non-Functional
 
@@ -119,13 +119,13 @@ The initial UI components will be delivered as part of the Askii.ai responsive w
 
 ### Epic 2: mPass Authentication and Consent
 
-*   **Goal:** Integrate the existing mPass authentication and implement consent to enable connections to MO Data MCP servers and mPass-integrated partner services. Deliver consent UI, secure token storage, and connection management (view/revoke).
+*   **Goal:** Integrate the existing mPass authentication and implement consent to enable connections to MO Data MCP servers and MCP-enabled mPass-integrated partner services. Deliver consent UI, secure token storage, and connection management (view/revoke).
 
-### Epic 3: End-to-End MO Data MCP Server Connection & Data Retrieval
+### Epic 3: MO Data Retrieval
 
-*   **Goal:** Integrate the MO Data MCP server package with Askii.ai to achieve complete end-to-end functionality. This includes connecting to deployed MO servers via mPass authentication and consent, implementing intelligent query detection, invoking appropriate MCP tools, and integrating retrieved MO data into contextual AI responses.
+*   **Goal:** Integrate the MO Data MCP server with Askii.ai to achieve complete end-to-end functionality. This includes connecting to a deployed MO server via mPass authentication and consent, implementing intelligent query detection, invoking appropriate MCP tools, and integrating retrieved MO data into contextual AI responses.
 
-### Epic 4: Partner Service Integration
+### Epic 4: MCP-Enabled mPass-Integrated Partner Service Integration
 
 *   **Goal:** Extend the proven mPass authentication and MCP integration pattern to support third-party services that are MCP-enabled and already integrated with mPass. This delivers the second core capability of the MVP and completes the full framework scope.
 
@@ -261,7 +261,7 @@ so that **I can grant access only when it's actually needed for my queries**.
 4. User can dismiss prompts without connecting and continue with available data
 5. Prompts are non-intrusive and don't disrupt the conversation flow
 
-## Epic 3: End-to-End MO Connection & Data Retrieval
+## Epic 3: MO Data Retrieval
 
 **Epic Goal:** Integrate the MCP server package with Askii.ai and mPass authentication to achieve complete end-to-end functionality. This includes connecting to deployed MO servers, implementing intelligent query detection, invoking appropriate MCP tools, and integrating retrieved MO data into contextual AI responses.
 
@@ -307,14 +307,14 @@ so that **I get personalized, contextual answers while understanding what data w
 4. Sensitive data handled appropriately - no unnecessary exposure of private details
 5. Fallback responses when MO data is unavailable, with explanation of limitations
 
-## Epic 4: Partner Service Integration
+## Epic 4: MCP-Enabled mPass-Integrated Partner Service Integration
 
 **Epic Goal:** Extend the proven mPass authentication and MCP integration pattern to support third-party services that are MCP-enabled and already integrated with mPass. This delivers the second core capability of the MVP and completes the full framework scope.
 
 ### Story 4.1: Partner Authentication and Tool Integration
 
 As a **user**,
-I want **to connect to a partner service using the same mPass flow and access their tools seamlessly**,
+I want **to connect to a MCP-enabled mPass-integrated service using the same mPass flow and access their tools seamlessly**,
 so that **I have a consistent experience across all connected services**.
 
 #### Acceptance Criteria
@@ -328,7 +328,7 @@ so that **I have a consistent experience across all connected services**.
 ### Story 4.2: Basic Partner Data Usage in Responses
 
 As a **user**,
-I want **Askii.ai to use data from connected partner services in my responses**,
+I want **Askii.ai to use data from connected MCP-enabled mPass-integrated services in my responses**,
 so that **I get enhanced answers that include information from my connected third-party services**.
 
 #### Acceptance Criteria

@@ -467,7 +467,8 @@ flowchart TD
     class CreateForm,EditForm,EnterName,UpdateName,SelectUser,SelectMultiple,SelectGroup processStyle
     class Action,GroupAction,ValidateName,ValidateEdit,CheckConflict,CheckMembers,HandleMembers,AssignMethod decisionStyle
     class GroupCreated,GroupUpdated,AssignSuccess,RemoveSuccess,DeleteSuccess,BulkComplete successStyle
-    class ShowErrors errorStyle 
+    class ShowErrors errorStyle
+ 
 ```
 
 ### 4.8. Flow 8: Centralized Policy Management

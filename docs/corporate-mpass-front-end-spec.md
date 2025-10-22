@@ -1319,239 +1319,61 @@ This section provides low-fidelity wireframes for the key screens and interactiv
 ![Enterprise Admin Portal - User Management Page](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.27.27.png)
 
 
-### 5.3. User Management Modals & Pages
-
-#### Wireframe: User Detail Page
-
--   **Purpose**: To provide a comprehensive, read-only view of an employee's status, permissions, and activity, as well as a launch point for individual actions.
--   **Layout**: A two-column layout with summary information on the left and detailed activity logs in a tabbed interface on the right.
-
-```
-+--------------------------------------------------------------------------------------+
-| [Logo]            | [Header: User Details]                                             |
-|                   |  < Back to User Management                                         |
-|-------------------|--------------------------------------------------------------------|
-| NAVIGATION        |  [Section: John Smith] [Status: Active]                            |
-| (...)             |   john.smith@company.com                                           |
-|                   |   Member Since: Oct 22, 2024                                       |
-|                   |                                    [ Suspend User ] [ Edit User ]  |
-|                   |--------------------------------------------------------------------|
-|                   |                                                                    |
-|                   |  [Card: Groups (1)]         |   [  Transactions  ] [  Policy  ]      |
-|                   |   - Sales                   |------------------------------------|
-|                   |                             |                                    |
-|                   |  [Card: MTD Spend]          |   [Transaction History Table]      |
-|                   |   - $450.00 / $1000.00      |   List of recent transactions...   |
-|                   |                             |                                    |
-|                   |                             |                                    |
-+--------------------------------------------------------------------------------------+
-```
-
-#### Wireframe: Invite Employee Modal (Single)
-
--   **Purpose**: A quick, focused form for inviting one employee at a time.
-
-```
-+--------------------------------------------------+
-| Invite Employee                              [X] |
-|--------------------------------------------------|
-|                                                  |
-|   [ Email Address*         ]                     |
-|                                                  |
-|   [ Assign to Group(s) (Optional)   v ]          |
-|    - [x] Engineering                             |
-|    - [ ] Marketing                               |
-|                                                  |
-|                         [Cancel] [Send Invite]   |
-+--------------------------------------------------+
-```
-
-#### Wireframe: Invite Employees Modal (Bulk)
-
--   **Purpose**: A two-step process for uploading a CSV of multiple employees.
-
-```
-+--------------------------------------------------+
-| Invite Employees (Bulk)                        [X] |
-|--------------------------------------------------|
-|  Step 1: Upload File                             |
-|   Download our [template.csv] to get started.    |
-|                                                  |
-|   [ Drag & Drop CSV here or Click to Browse ]    |
-|                                                  |
-|  Step 2: Preview & Confirm (disabled)            |
-|                                                  |
-|                         [Cancel] [Next >]        |
-+--------------------------------------------------+
-```
-
-#### Wireframe: User Groups Main Page
-
--   **Purpose**: To list all created user groups and provide entry points for managing them.
--   **Layout**: A card-based view that provides key information at a glance.
-
-```
-+--------------------------------------------------------------------------------------+
-| [Logo]            | [Header: User Groups]                                              |
-|-------------------|--------------------------------------------------------------------|
-| NAVIGATION        |                                                                    |
-| -> Dashboard      |  [Search groups...]                           [Create New Group]   |
-| -> User Mgmt      |--------------------------------------------------------------------|
-| -> ...            |                                                                    |
-|                   |  [Card: Engineering]     [Card: Marketing]     [Card: Sales]       |
-|                   |   - 75 Members           - 22 Members          - 35 Members        |
-|                   |   - Policy: Default     - Policy: Custom    |
-|                   |   - [...]                - [...]               - [...]             |
-|                   |                                                                    |
-+--------------------------------------------------------------------------------------+
-```
-
-#### Wireframe: User Group Detail Page
-
--   **Purpose**: To provide a detailed view of a specific group, its members, its assigned policies, and its spending activity. This is the admin's primary interface for managing a department.
--   **Layout**: A summary header with key stats and a tabbed interface to switch between managing members and managing the group's policy.
-
-```
-+--------------------------------------------------------------------------------------+
-| [Logo]            | [Header: Group Details]                                            |
-|                   |  < Back to User Groups                                             |
-|-------------------|--------------------------------------------------------------------|
-| NAVIGATION        |  [Section: Engineering] [75 Members]       [ Edit Name ] [ Delete ]|
-| (...)             |--------------------------------------------------------------------|
-|                   |                                                                    |
-|                   |  [Card: Group MTD Spend]    [Card: Group Policy]                   |
-|                   |   - $8,210 / $15,000        - Custom (Inherits 2/3 company rules)  |
-|                   |                                                                    |
-|                   |--------------------------------------------------------------------|
-|                   |                                                                    |
-|                   |  [   Members (75)   ]  [   Group Policy   ]                         |
-|                   |--------------------------------------------------------------------|
-|                   |                                                                    |
-|                   |   [User Data Table for this group]                                 |
-|                   |   Showing members of the Engineering group...                      |
-|                   |                                                                    |
-+--------------------------------------------------------------------------------------+
-```
-
-#### Wireframe: Manage Group Membership Page/Modal
-
--   **Purpose**: To allow admins to easily add and remove users from a specific group.
--   **Layout**: A dual-list (or "picklist") pattern, which is the standard and most intuitive UI for this task.
-
-```
-+------------------------------------------------------------------+
-| Manage Members: Engineering                                    [X] |
-|------------------------------------------------------------------|
-|                                                                  |
-| [Available Employees (25)]      [<]      [Group Members (75)]    |
-| [Search...]                     [>]      [Search...]             |
-| +-------------------------+              +---------------------+ |
-| | [ ] Alex Green          |              | [x] Barry White     | |
-| | [ ] Brenda Blue         |              | [x] Chris Black     | |
-| | ...                     |              | ...                 | |
-| +-------------------------+              +---------------------+ |
-|                                                                  |
-|                                       [Cancel] [Save Changes]    |
-+------------------------------------------------------------------+
-```
-
-### 5.4. Policy Management
+### 5.3. Policy Management
 
 #### Wireframe: Policy Management Main Page
 
 -   **Purpose**: A unified interface to manage all company-wide, group, and individual policies. Each level includes its own contextual change history.
--   **Layout**: A tabbed interface to separate the three levels of the policy hierarchy.
 
-```
-+--------------------------------------------------------------------------------------+
-| [Logo]            | [Header: Policy Management]                                        |
-|-------------------|--------------------------------------------------------------------|
-| NAVIGATION        |                                                                    |
-| -> Dashboard      |  [  Company-Wide  ]  [   Groups   ]  [  Individuals  ]             |
-| -> ...            |--------------------------------------------------------------------|
-|                   |                                                                    |
-|                   | [Section: Company-Wide Policy]                                     |
-|                   |  [Card: Global Spending Limit]             ( Edit ) ( View History ) |
-|                   |   - Monthly Limit: $50,000                                         |
-|                   |  [Card: Global Service Access]             ( Edit ) ( View History ) |
-|                   |   - Allowed: Business Tools | Blocked: Netflix, Spotify            |
-|                   |                                                                    |
-+--------------------------------------------------------------------------------------+
-```
+![Policy Management Main Page](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.27.45.png)
 
-### 5.5. Billing & Reporting
+### 5.4. Billing & Reporting
 
-#### Wireframe: Billing & Reporting Page (Statements Tab)
+#### Wireframe: Transaction Log
+
+-   **Purpose**: To provide a clear history of all transactions.
+
+![Transaction Log](https://github.com/diemnguyen944/test_repo/blob/po/docs/assets/Screenshot%202025-10-22%20at%2011.27.57.png)
+
+#### Wireframe: Monthly Statement
 
 -   **Purpose**: To provide a clear history of all monthly statements and allow for easy viewing and downloading.
--   **Layout**: A clean data table listing all statements chronologically.
 
-```
-+--------------------------------------------------------------------------------------+
-| [Logo]            | [Header: Billing & Reporting]                                      |
-|-------------------|--------------------------------------------------------------------|
-| NAVIGATION        |                                                                    |
-| -> Dashboard      |  [ Transaction Log ]  [  Statements  ]  [  Reports  ]              |
-| -> ...            |--------------------------------------------------------------------|
-|                   |                                                                    |
-|                   |  [Statements Table]                                                |
-|                   |  +---------------+--------------+------------+----------+---------+ |
-|                   |  | Period        | Total Amount | Status     | Due Date | Actions | |
-|                   |  +---------------+--------------+------------+----------+---------+ |
-|                   |  | Nov 1-30, 2024| $12,450.78   | [Paid]     | 12/15/24 | [View]  | |
-|                   |  | Oct 1-31, 2024| $11,980.12   | [Paid]     | 11/15/24 | [View]  | |
-|                   |  +---------------+--------------+------------+----------+---------+ |
-|                   |                                                                    |
-+--------------------------------------------------------------------------------------+
-```
+![Monthly Statement](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.28.11.png)
 
-### 5.6. Dispute Management
+### 5.5. Dispute Management
 
 #### Wireframe: Dispute Management Page
 
 -   **Purpose**: A comprehensive view of all disputes, their statuses, and associated details.
--   **Layout**: A data table with filtering and search capabilities.
 
-```
-+--------------------------------------------------------------------------------------+
-| [Logo]            | [Header: Dispute Management]                                       |
-|-------------------|--------------------------------------------------------------------|
-| NAVIGATION        |                                                                    |
-| -> Dashboard      |  [Search Bar]                    [Filter] [Export]                 |
-| -> ...            |--------------------------------------------------------------------|
-|                   |                                                                    |
-|                   |  [Dispute Log Table]                                               |
-|                   |  +------------+----------+-----------+-------------+---------------+ |
-|                   |  | Status     | Employee | Amount    | Date        | Action        | |
-|                   |  +------------+----------+-----------+-------------+---------------+ |
-|                   |  | [Compensated] | John S.  | $45.00    | Dec 15, 2024| [View Details]| |
-|                   |  +------------+----------+-----------+-------------+---------------+ |
-|                   |                                                                    |
-+--------------------------------------------------------------------------------------+
-```
+![Dispute Management Page](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.28.21.png)
 
-#### Wireframe: View Dispute Details Modal
+### 5.5. MO Admin
 
--   **Purpose**: To provide all relevant information about a specific dispute in a scannable format.
+#### Wireframe: Application Queue
 
-```
-+------------------------------------------------------------------+
-| Dispute Details                                              [X] |
-|------------------------------------------------------------------|
-|                                                                  |
-|  [Dispute Information]                                           |
-|   - Status: Compensated                                          |
-|   - Employee: John Smith (john.smith@company.com)                |
-|                                                                  |
-|  [Original Transaction Details]                                  |
-|   - Service: Adobe Creative Cloud | Amount: $45.00               |
-|                                                                  |
-|  [Employee Notes]                                                |
-|   "I was charged twice for the same service."                    |
-|                                                                  |
-|                                       [View Transaction] [Close] |
-+------------------------------------------------------------------+
-```
+-   **Purpose**: A comprehensive view of all Corporate mPass Application.
+
+![Application Queue](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.28.33.png)
+
+#### Wireframe: Application Review
+
+-   **Purpose**: A detailed view of a Corporate mPass Application.
+
+![Application Review](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.28.44.png)
+
+#### Wireframe: Corporate Portfolio
+
+-   **Purpose**: A comprehensive view of all Corporates.
+
+![Corporate Portfolio](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.28.54.png)
+
+#### Wireframe: Billing Management
+
+-   **Purpose**: A comprehensive view of all billings.
+
+![Billing Management](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.29.04.png)
 
 ## 6. Component Library
 

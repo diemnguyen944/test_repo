@@ -1293,110 +1293,31 @@ This section provides low-fidelity wireframes for the key screens and interactiv
 
 ### 5.1. Onboarding & Authentication
 
-#### Wireframe: Corporate mPass Registration Page
+#### Wireframe: Corporate mPass Application Form
 
 -   **Purpose**: To allow a new enterprise to apply for the Corporate mPass service.
--   **Layout**: A clean, single-column form focused on capturing essential information without overwhelming the user.
 
-```
-+-------------------------------------------------------------+
-| [MO Logo]                                                   |
-|                                                             |
-|                  Corporate mPass Registration               |
-|                                                             |
-| --- Company Information ---                                 |
-| [ Company Name*         ]                                   |
-| [ Business Registration # ]                                 |
-| [ Company Address*        ]                                   |
-|                                                             |
-| --- Administrator Details ---                               |
-| [ Full Name*            ]                                   |
-| [ Job Title*            ]                                   |
-| [ Work Email*           ]                                   |
-| [ Phone Number*         ]                                   |
-|                                                             |
-| [x] I agree to the [Terms of Service] and [Privacy Policy]  |
-|                                                             |
-|                  [ Submit Application ]                     |
-|                                                             |
-|         Already have an account? [Log In]                   |
-+-------------------------------------------------------------+
-```
+[Corporate mPass Registration Page](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.17.47.png)
 
-#### Wireframe: Login Screen
+#### Wireframe: Employee Invitation Email
+-   **Purpose**: To allow a employee to apply for the Individual Corporate mPass service.
 
--   **Purpose**: To provide secure access for registered enterprise administrators.
--   **Layout**: A simple, centered modal-style card to focus the user on the task of logging in.
+[Employee Invitation Email](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.26.49.png)
 
-```
-+-------------------------------------------------------------+
-|                                                             |
-|                        [MO Logo]                            |
-|                                                             |
-|                 Welcome Back, Admin                         |
-|                                                             |
-|   [ Email Address*        ]                                 |
-|                                                             |
-|   [ Password*             ]                                 |
-|                                                             |
-|   [ Remember Me ]         [ Forgot Password? ]              |
-|                                                             |
-|                     [ Log In ]                              |
-|                                                             |
-+-------------------------------------------------------------+
-```
-
-### 5.2. Main Portal Screens
+### 5.2. Corporate Admin Portal
 
 #### Wireframe: Enterprise Admin Portal - Main Dashboard
 
 -   **Purpose**: To provide a high-level overview of account activity and quick access to common tasks upon login.
--   **Layout**: A card-based design that surfaces key metrics and recent activity.
 
-```
-+--------------------------------------------------------------------------------------+
-| [Logo]            | [Header: Dashboard]                                                |
-|-------------------|--------------------------------------------------------------------|
-| NAVIGATION        |                                                                    |
-| -> Dashboard      |  [Card: Total Spend (Month)]  [Card: Active Users]  [Card: Pending] |
-| -> User Mgmt      |   - $12,450.78 / $50,000      - 75 / 80             - 2 Invites     |
-| -> Policy Mgmt    |                                                                    |
-| -> Billing        |  [Section: Quick Actions]                                          |
-| -> Disputes       |   [Invite User] [Create Group] [View Statement] [Make Payment]     |
-| -> Settings       |                                                                    |
-|                   |  [Section: Recent Activity]                                        |
-| [User Profile]    |   - Jane Doe was added to the 'Sales' group. (1h ago)              |
-| [Logout]          |   - A dispute for $45.00 was initiated. (3h ago)                   |
-|                   |   - A new policy was set for the 'Engineering' group. (Yesterday)    |
-|                   |                                                                    |
-+--------------------------------------------------------------------------------------+
-```
+[Enterprise Admin Portal - Main Dashboard](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.27.10.png)
 
 #### Wireframe: Enterprise Admin Portal - User Management Page
 
 -   **Purpose**: To provide a central place for admins to view, search, and manage all employees (both active and pending).
--   **Layout**: A robust data table that allows for efficient scanning and action-taking.
 
-```
-+--------------------------------------------------------------------------------------+
-| [Logo]            | [Header: User Management]                                          |
-|-------------------|--------------------------------------------------------------------|
-| NAVIGATION        |                                                                    |
-| -> Dashboard      |  [Search by name/email...] [Filter by Status] [Filter by Group]    |
-| -> User Mgmt      |                                                     [Invite Users] |
-| -> Policy Mgmt    |--------------------------------------------------------------------|
-| -> Billing        |                                                                    |
-| -> Disputes       |  [User Data Table]                                                 |
-| -> Settings       |  +----------+----------------------+----------+----------+-------------------------------------------------+ |
-|                   |  | Name     | Email                | Status   | Groups   | Action                                          | |
-| [User Profile]    |  +----------+----------------------+----------+----------+-------------------------------------------------+ |
-| [Logout]          |  | John S.  | john.s@...           | [Active] | Sales    | [View Details] [Suspend]                        | |
-|                   |  | Jane D.  | jane.d@...           | [Active] | Mrkt, Dev| [View Details] [Suspend]                        | |
-|                   |  | Pat J.   | pat.j@...            | [Pending]|          | [View Details] [Resend Invite] [Cancel Invite]  | |
-|                   |  +----------+----------------------+----------+----------+-------------------------------------------------+ |
-|                   |                                         [Pagination: 1 2 3 ... 10] |
-+--------------------------------------------------------------------------------------+
-```
+[Enterprise Admin Portal - User Management Page](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.27.27.png)
+
 
 ### 5.3. User Management Modals & Pages
 

@@ -868,7 +868,7 @@ flowchart TD
 ```
 ### 4.14. Flow 14: Corporate Admin Dispute Monitoring & Reporting
 
-```Mermaid
+```mermaid
 flowchart TD
     Start([Corporate Admin Portal]) --> DisputeLog[Dispute Management Page]
     
@@ -1204,7 +1204,7 @@ flowchart TD
     class AutoNote noteStyle
 ```
 #### MO Flow 5: Employee & Group Oversight
-```Mermaid
+```mermaid
 flowchart TD
     Start([MO Admin Portal]) --> Dashboard[Corporate Account Details]
     

@@ -252,7 +252,7 @@ graph TD
     A[Admin navigates to 'User Management'] --> B[Clicks 'Invite Users' button]
     B --> C[Invite Employee modal appears]
     C --> D[Admin enters employee's email address]
-    D --> E[Admin optionally assigns the employee to one or more groups]
+    D --> E[Admin optionally assigns the employee to a group]
     E --> F[Clicks 'Send Invite']
     F --> G((System Processing))
     G --> H{Is email valid and not already in use?}

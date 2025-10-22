@@ -26,7 +26,7 @@ This document defines the user experience goals, information architecture, user 
 
 | Date         | Version | Description                           | Author     |
 | :----------- | :------ | :------------------------------------ | :--------- |
-| Oct 20, 2025 | 1.0     | Initial draft based on the PRD v1.3.0 | Sally (UX) |
+| Oct 20, 2025 | 1.0     | Initial draft based on the PRD v1.3.0 | Diem Nguyen |
 
 ## 2. Information Architecture (IA)
 

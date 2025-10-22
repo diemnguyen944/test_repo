@@ -371,9 +371,9 @@ This flow details how an admin assigns and removes employees from a specific gro
 ```mermaid
 flowchart TD
     Start([Corporate Admin Portal]) --> GroupDashboard[View User Groups List]
-    
+
     GroupDashboard --> Action{Choose Action}
-    
+
     %% Create Group Flow
     Action -->|Create New Group| CreateForm[Fill Create Group Form]
     CreateForm --> EnterName[Enter Group Name]
@@ -382,12 +382,12 @@ flowchart TD
     ValidateName -->|No - Duplicate/Invalid| CreateForm
     ValidateName -->|Yes| GroupCreated[Group Created Successfully]
     GroupCreated --> GroupDashboard
-    
+
     %% View Group Details
     Action -->|View Group| GroupDetails[View Group Details Page]
     GroupDetails --> ShowDetails[Display:<br/>- Group Name<br/>- Member Count<br/>- Assigned Policies<br/>- Spending Summary<br/>- Member List]
     ShowDetails --> GroupAction{Choose Action}
-    
+
     %% Edit Group
     GroupAction -->|Edit/Rename| EditForm[Edit Group Form]
     EditForm --> UpdateName[Update Group Name]
@@ -396,7 +396,7 @@ flowchart TD
     ValidateEdit -->|No| EditForm
     ValidateEdit -->|Yes| GroupUpdated[Group Updated]
     GroupUpdated --> GroupDetails
-    
+
     %% Assign Users
     GroupAction -->|Assign Users| AssignMethod{Choose Method}
     AssignMethod -->|Single User| SelectUser[Select User from List]
@@ -411,7 +411,7 @@ flowchart TD
     AssignUser --> UpdatePolicies[Apply Group Policies<br/>to User]
     UpdatePolicies --> AssignSuccess[Assignment Successful]
     AssignSuccess --> GroupDetails
-    
+
     %% Remove Users
     GroupAction -->|Remove User| SelectRemove[Select User to Remove]
     SelectRemove --> ConfirmRemove[Confirm Removal]
@@ -419,7 +419,7 @@ flowchart TD
     RemoveUser --> RevertPolicy[Revert to Company<br/>Default Policies]
     RevertPolicy --> RemoveSuccess[User Removed]
     RemoveSuccess --> GroupDetails
-    
+
     %% Delete Group
     GroupAction -->|Delete Group| CheckMembers{Group Has<br/>Members?}
     CheckMembers -->|Yes| DeleteOptions[Choose Action for Members:<br/>1. Move to Another Group<br/>2. Revert to Company Default]
@@ -432,7 +432,7 @@ flowchart TD
     MoveToGroup --> DeleteSuccess[Group Deleted]
     RevertMembers --> DeleteSuccess
     DeleteSuccess --> GroupDashboard
-    
+
     %% Bulk Assign Flow
     Action -->|Bulk Assign to Group| SelectGroup[Select Target Group]
     SelectGroup --> ViewEmployeeList[View Employee List]
@@ -452,20 +452,20 @@ flowchart TD
     ShowResults[Show Results:<br/>- Success Count<br/>- Moved Users<br/>- Skipped Users]
     ShowResults --> BulkComplete[Bulk Assignment Complete]
     BulkComplete --> GroupDashboard
-    
+
     %% Return to Dashboard
     GroupAction -->|Back| GroupDashboard
-    
+
     %% Styling
     classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
     classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
     classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
     classDef errorStyle fill:#E74C3C,stroke:#C0392B,stroke-width:2px,color:#fff
     classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
-    
+
     class Start,GroupDashboard startStyle
-    class CreateForm,EditForm,EnterName,UpdateName,SelectUser,SelectMultiple,SelectGroup,UploadFile processStyle
-    class Action,GroupAction,ValidateName,ValidateEdit,CheckConflict,CheckMembers,HandleMembers,AssignMethod,ValidateFile decisionStyle
+    class CreateForm,EditForm,EnterName,UpdateName,SelectUser,SelectMultiple,SelectGroup processStyle
+    class Action,GroupAction,ValidateName,ValidateEdit,CheckConflict,CheckMembers,HandleMembers,AssignMethod decisionStyle
     class GroupCreated,GroupUpdated,AssignSuccess,RemoveSuccess,DeleteSuccess,BulkComplete successStyle
     class ShowErrors errorStyle 
 ```

@@ -1297,12 +1297,12 @@ This section provides low-fidelity wireframes for the key screens and interactiv
 
 -   **Purpose**: To allow a new enterprise to apply for the Corporate mPass service.
 
-[Corporate mPass Registration Page](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.17.47.png)
+![Corporate mPass Registration Page](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.17.47.png)
 
 #### Wireframe: Employee Invitation Email
 -   **Purpose**: To allow a employee to apply for the Individual Corporate mPass service.
 
-[Employee Invitation Email](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.26.49.png)
+![Employee Invitation Email](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.26.49.png)
 
 ### 5.2. Corporate Admin Portal
 
@@ -1310,13 +1310,13 @@ This section provides low-fidelity wireframes for the key screens and interactiv
 
 -   **Purpose**: To provide a high-level overview of account activity and quick access to common tasks upon login.
 
-[Enterprise Admin Portal - Main Dashboard](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.27.10.png)
+![Enterprise Admin Portal - Main Dashboard](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.27.10.png)
 
 #### Wireframe: Enterprise Admin Portal - User Management Page
 
 -   **Purpose**: To provide a central place for admins to view, search, and manage all employees (both active and pending).
 
-[Enterprise Admin Portal - User Management Page](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.27.27.png)
+![Enterprise Admin Portal - User Management Page](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.27.27.png)
 
 
 ### 5.3. User Management Modals & Pages

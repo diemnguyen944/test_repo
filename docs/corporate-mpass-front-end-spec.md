@@ -1319,15 +1319,12 @@ This section provides low-fidelity wireframes for the key screens and interactiv
 ![Enterprise Admin Portal - User Management Page](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.27.27.png)
 
 
-### 5.3. Policy Management
-
 #### Wireframe: Policy Management Main Page
 
 -   **Purpose**: A unified interface to manage all company-wide, group, and individual policies. Each level includes its own contextual change history.
 
 ![Policy Management Main Page](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.27.45.png)
 
-### 5.4. Billing & Reporting
 
 #### Wireframe: Transaction Log
 
@@ -1341,7 +1338,6 @@ This section provides low-fidelity wireframes for the key screens and interactiv
 
 ![Monthly Statement](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.28.11.png)
 
-### 5.5. Dispute Management
 
 #### Wireframe: Dispute Management Page
 
@@ -1349,7 +1345,7 @@ This section provides low-fidelity wireframes for the key screens and interactiv
 
 ![Dispute Management Page](https://raw.githubusercontent.com/diemnguyen944/test_repo/refs/heads/po/docs/assets/Screenshot%202025-10-22%20at%2011.28.21.png)
 
-### 5.5. MO Admin
+### 5.5. MO Admin Portal
 
 #### Wireframe: Application Queue
 

@@ -59,7 +59,7 @@ graph TD
     EmpDetails --> SuspendEmp[Suspend/De-provision]
     
     InviteUser --> SingleInvite[Single Email Invite]
-    InviteUser --> BulkInvite[Bulk Upload]
+    InviteUser --> BulkUpload[Bulk Upload via CSV]
     
     UserGroups --> CreateGroup[Create Group]
     UserGroups --> GroupList[View Groups]
@@ -191,7 +191,7 @@ graph TD
     classDef moClass fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     classDef rootClass fill:#e8f5e9,stroke:#388e3c,stroke-width:3px
     
-    class CorpAdmin,AdminDash,UserMgmt,PolicyMgmt,Billing,Disputes,AdminSettings,EmpList,InviteUser,UserGroups,EmpDetails,SuspendEmp,SingleInvite,BulkInvite,CreateGroup,GroupList,GroupDetails,AssignUsers,RemoveUsers,DeleteGroup,CompanyPolicy,GroupPolicy,IndividualPolicy,CompanySpending,CompanyAccess,GroupSpending,GroupAccess,IndSpending,IndAccess,Whitelist,Blacklist,TransLog,Statements,Reports,Payment,FilterTrans,DisputeTrans,GroupReport,EmployeeReport,ExportReport,DisputeLog,ViewCredits adminClass
+    class CorpAdmin,AdminDash,UserMgmt,PolicyMgmt,Billing,Disputes,AdminSettings,EmpList,InviteUser,UserGroups,EmpDetails,SuspendEmp,SingleInvite,BulkUpload,CreateGroup,GroupList,GroupDetails,AssignUsers,RemoveUsers,DeleteGroup,CompanyPolicy,GroupPolicy,IndividualPolicy,CompanySpending,CompanyAccess,GroupSpending,GroupAccess,IndSpending,IndAccess,Whitelist,Blacklist,TransLog,Statements,Reports,Payment,FilterTrans,DisputeTrans,GroupReport,EmployeeReport,ExportReport,DisputeLog,ViewCredits adminClass
     
     class mPassApp,Guide,History,Profile,BrowseServices,SelectService,Authorize,PolicyCheck,ViewTrans,DisputeAction,EmpSettings,Notifications,PolicyDenial mpassClass
     
@@ -243,7 +243,7 @@ graph TD
     end
 ```
 
-### 4.2. Flow 2: Inviting a New Employee (Single)
+### 4.2. Flow 2: Inviting a New Employees
 
 This flow covers the process for an admin inviting a single employee to the corporate mPass program.
 
@@ -298,35 +298,26 @@ graph TD
     end
 ```
 
-### 4.4. Flow 4: Employee Invitation Acceptance & Activation (App-Based)
+### 4.4. Flow 4: Employee Invitation Acceptance & Activation
 
 This flow details how an invited employee activates their corporate mPass using the mobile app.
 
 ```mermaid
 graph TD
-    A[Employee receives invitation email on their desktop] --> B{Has mPass app installed?};
+    A[Employee receives invitation email] --> B{Has mPass app installed?};
     B -- No --> C[Email prompts user to download mPass app from App Store / Google Play];
-    C --> D[User installs and opens mPass app];
+    C --> D[User opens mPass app];
     B -- Yes --> D;
 
-    D --> E[In mPass app, user selects 'Add Corporate mPass'];
-    E --> F[App opens camera to scan QR code];
+    D --> F[Scan QR code in the email];
     
-    subgraph "Scanning the QR Code"
-      G[User points phone camera at QR code in the email on their desktop screen];
-    end
-
-    F --> G;
-    G --> H((System: Validating QR Code...));
+    F --> H((System: Validating QR Code...));
     H --> I{QR Code Valid?};
     I -- "No (e.g., expired, already used)" --> J[App shows error: 'Invalid invitation. Please contact your administrator.'];
     J --> End((Flow Ends));
-    I -- Yes --> K[App prompts for biometric confirmation using Face ID or Fingerprint];
-    K --> L[App communicates with server to provision the new corporate mPass];
-    L --> M[A new corporate-branded mPass appears in the user's app];
-    M --> N[User sees a 'Welcome' screen with a success message];
-    N --> O((System: Update user status to 'Active' in Admin Portal));
-    O --> Success((Flow Complete));
+    I -- Yes --> M[A new corporate-branded mPass appears in the user's app];
+    M --> O((System: Update user status to 'Active' in Admin Portal));
+    O --> Success((Flow Complete)); 
 ```
 
 ### 4.5. Flow 5: Employee Lifecycle Management
@@ -360,8 +351,8 @@ This flow outlines the simple process of creating a new user group.
 ```mermaid
 graph TD
     A[Admin navigates to 'User Groups' page] --> B[Clicks 'Create New Group' button]
-    B --> C[Create Group modal appears with a single 'Group Name' field]
-    C --> D[Admin enters a name for the group, e.g., 'Engineering']
+    B --> C[Create Group modal appears with a 'Group Name' field and a 'Group description' field]
+    C --> D[Admin enters a name and a description for the group, e.g., 'Engineering', 'This group is for IT Department']
     D --> E[Admin clicks 'Create']
     E --> F((System Processing))
     F --> G{Creation Successful?}
@@ -378,31 +369,105 @@ graph TD
 This flow details how an admin assigns and removes employees from a specific group.
 
 ```mermaid
-graph TD
-    A[Admin navigates to 'User Groups' page] --> B[Clicks 'Manage Members' on a specific group]
-    B --> C[Manage Members page/modal appears]
-
-    subgraph "Dual-List Interface"
-        C --> D[Left List: 'Available Employees' (shows all users not in the group)]
-        C --> E[Right List: 'Members of [Group Name]' (shows current members)]
-    end
+flowchart TD
+    Start([Corporate Admin Portal]) --> GroupDashboard[View User Groups List]
     
-    D --> F{Admin selects employees to add}
-    F --> G[Clicks '>' button to move them to the 'Members' list]
-
-    E --> H{Admin selects members to remove}
-    H --> I[Clicks '<' button to move them to the 'Available' list]
-
-    G --> J[Admin clicks 'Save Changes']
-    I --> J
+    GroupDashboard --> Action{Choose Action}
     
-    J --> K((System Processing))
-    K --> L{Save Successful?}
-    L -- No --> M[Show error toast]
-    L -- Yes --> N[Show success toast: '[Group Name] updated with 15 members.']
-    N --> O[Admin is returned to the main 'User Groups' page]
-    O --> P[Member count for the group is updated]
-    P --> Success((Flow Complete))
+    %% Create Group Flow
+    Action -->|Create New Group| CreateForm[Fill Create Group Form]
+    CreateForm --> EnterName[Enter Group Name]
+    EnterName --> SubmitCreate[Submit]
+    SubmitCreate --> ValidateName{Name Valid?}
+    ValidateName -->|No - Duplicate/Invalid| CreateForm
+    ValidateName -->|Yes| GroupCreated[Group Created Successfully]
+    GroupCreated --> GroupDashboard
+    
+    %% View Group Details
+    Action -->|View Group| GroupDetails[View Group Details Page]
+    GroupDetails --> ShowDetails[Display:<br/>- Group Name<br/>- Member Count<br/>- Assigned Policies<br/>- Spending Summary<br/>- Member List]
+    ShowDetails --> GroupAction{Choose Action}
+    
+    %% Edit Group
+    GroupAction -->|Edit/Rename| EditForm[Edit Group Form]
+    EditForm --> UpdateName[Update Group Name]
+    UpdateName --> SubmitEdit[Submit Changes]
+    SubmitEdit --> ValidateEdit{Name Valid?}
+    ValidateEdit -->|No| EditForm
+    ValidateEdit -->|Yes| GroupUpdated[Group Updated]
+    GroupUpdated --> GroupDetails
+    
+    %% Assign Users
+    GroupAction -->|Assign Users| AssignMethod{Choose Method}
+    AssignMethod -->|Single User| SelectUser[Select User from List]
+    AssignMethod -->|Multiple Users| SelectMultiple[Select Multiple Users]
+    SelectUser --> ConfirmAssign[Confirm Assignment]
+    SelectMultiple --> ConfirmAssign
+    ConfirmAssign --> CheckConflict{User Already<br/>in Another Group?}
+    CheckConflict -->|Yes| MovePrompt[Prompt: Move from<br/>Current Group?]
+    MovePrompt -->|Cancel| GroupDetails
+    MovePrompt -->|Confirm| AssignUser[Assign User to Group]
+    CheckConflict -->|No| AssignUser
+    AssignUser --> UpdatePolicies[Apply Group Policies<br/>to User]
+    UpdatePolicies --> AssignSuccess[Assignment Successful]
+    AssignSuccess --> GroupDetails
+    
+    %% Remove Users
+    GroupAction -->|Remove User| SelectRemove[Select User to Remove]
+    SelectRemove --> ConfirmRemove[Confirm Removal]
+    ConfirmRemove --> RemoveUser[Remove User from Group]
+    RemoveUser --> RevertPolicy[Revert to Company<br/>Default Policies]
+    RevertPolicy --> RemoveSuccess[User Removed]
+    RemoveSuccess --> GroupDetails
+    
+    %% Delete Group
+    GroupAction -->|Delete Group| CheckMembers{Group Has<br/>Members?}
+    CheckMembers -->|Yes| DeleteOptions[Choose Action for Members:<br/>1. Move to Another Group<br/>2. Revert to Company Default]
+    DeleteOptions --> ConfirmDelete[Confirm Deletion]
+    CheckMembers -->|No| ConfirmDelete
+    ConfirmDelete --> ProcessDelete[Delete Group]
+    ProcessDelete --> HandleMembers{Members Action}
+    HandleMembers -->|Move| MoveToGroup[Move Members to<br/>Selected Group]
+    HandleMembers -->|Revert| RevertMembers[Revert Members to<br/>Company Default]
+    MoveToGroup --> DeleteSuccess[Group Deleted]
+    RevertMembers --> DeleteSuccess
+    DeleteSuccess --> GroupDashboard
+    
+    %% Bulk Assign Flow
+    Action -->|Bulk Assign to Group| SelectGroup[Select Target Group]
+    SelectGroup --> ViewEmployeeList[View Employee List]
+    ViewEmployeeList --> FilterSearch[Filter/Search Employees]
+    FilterSearch --> SelectMultipleEmp[Select Multiple Employees<br/>via Checkboxes]
+    SelectMultipleEmp --> ReviewSelection[Review Selected Employees]
+    ReviewSelection --> ConfirmBulkAssign[Confirm Bulk Assignment]
+    ConfirmBulkAssign --> ProcessBulk[Process Bulk Assignment]
+    ProcessBulk --> CheckBulkConflicts{Any Users Already<br/>in Other Groups?}
+    CheckBulkConflicts -->|Yes| ShowConflictList[Show Conflict List<br/>with Move Options]
+    ShowConflictList --> ResolveBulk{Resolve Conflicts}
+    ResolveBulk -->|Skip Conflicted| AssignNonConflicted[Assign Non-Conflicted Users]
+    ResolveBulk -->|Move All| AssignAll[Move & Assign All Users]
+    CheckBulkConflicts -->|No| AssignAll
+    AssignNonConflicted --> ShowResults
+    AssignAll --> ShowResults
+    ShowResults[Show Results:<br/>- Success Count<br/>- Moved Users<br/>- Skipped Users]
+    ShowResults --> BulkComplete[Bulk Assignment Complete]
+    BulkComplete --> GroupDashboard
+    
+    %% Return to Dashboard
+    GroupAction -->|Back| GroupDashboard
+    
+    %% Styling
+    classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
+    classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
+    classDef errorStyle fill:#E74C3C,stroke:#C0392B,stroke-width:2px,color:#fff
+    classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    
+    class Start,GroupDashboard startStyle
+    class CreateForm,EditForm,EnterName,UpdateName,SelectUser,SelectMultiple,SelectGroup,UploadFile processStyle
+    class Action,GroupAction,ValidateName,ValidateEdit,CheckConflict,CheckMembers,HandleMembers,AssignMethod,ValidateFile decisionStyle
+    class GroupCreated,GroupUpdated,AssignSuccess,RemoveSuccess,DeleteSuccess,BulkComplete successStyle
+    class ShowErrors errorStyle 
 ```
 
 ### 4.8. Flow 8: Centralized Policy Management
@@ -410,105 +475,448 @@ graph TD
 This flow describes the high-level process of an admin managing policies from the central Policy Management page.
 
 ```mermaid
-graph TD
-    A[Admin navigates to 'Policy Management'] --> B[Sees three tabs: Company-Wide, Groups, Individuals]
+flowchart TD
+    Start([Corporate Admin Portal]) --> PolicyDashboard[Policy Management Dashboard]
     
-    subgraph "Company-Wide Policy"
-        B -- Selects 'Company-Wide' tab --> C[Views global spending limits and service access rules]
-        C --> D[Clicks 'Edit']
-        D --> E[Makes changes in a dedicated form/modal]
-        E --> F[Saves changes, which apply to ALL users]
-    end
+    PolicyDashboard --> ShowHierarchy[Display Policy Hierarchy:<br/>Company → Groups → Individuals]
+    ShowHierarchy --> SelectLevel{Select Policy Level}
     
-    subgraph "Group Policies"
-        B -- Selects 'Groups' tab --> G[Views a list of all groups and their policy status]
-        G --> H[Clicks 'Manage Policy' for a specific group]
-        H --> I[Sets spending limits and service access for that group]
-        I --> J[Saves changes, which apply to all members of that group]
-    end
+    %% Company-Wide Policy Flow
+    SelectLevel -->|Company Policy| CompanyPolicy[Company-Wide Policy Page]
+    CompanyPolicy --> CompanyView[View Current Policy:<br/>- Monthly Spending Limit<br/>- Service Access Rules]
+    CompanyView --> CompanyAction{Choose Action}
     
-    subgraph "Individual Policies"
-        B -- Selects 'Individuals' tab --> K[Views a list of all users with individual policy overrides]
-        K --> L[Admin can search for a user]
-        L --> M[Clicks 'Manage Policy' for a specific user]
-        M --> N[Sets more restrictive limits for that individual]
-        N --> O[Saves changes, creating an individual override]
-    end
-
-    F --> Success((Flow Complete))
-    J --> Success
-    O --> Success
+    CompanyAction -->|Edit Spending Limit| CompanySpendForm[Edit Spending Limit Form]
+    CompanySpendForm --> EnterCompanyLimit[Enter Monthly Limit Amount]
+    EnterCompanyLimit --> ValidateCompanyLimit{Valid Amount?}
+    ValidateCompanyLimit -->|No| CompanySpendForm
+    ValidateCompanyLimit -->|Yes| SaveCompanyLimit[Save Company Limit]
+    SaveCompanyLimit --> CompanySuccess[Company Limit Updated]
+    CompanySuccess --> CompanyPolicy
+    
+    CompanyAction -->|Edit Service Access| CompanyServiceForm[Service Access Control]
+    CompanyServiceForm --> SelectAccessType{Access Control Type}
+    SelectAccessType -->|Whitelist| WhitelistCompany[Select Publishers/Categories<br/>to Allow]
+    SelectAccessType -->|Blacklist| BlacklistCompany[Select Publishers/Categories<br/>to Block]
+    WhitelistCompany --> SaveCompanyAccess[Save Company Access Rules]
+    BlacklistCompany --> SaveCompanyAccess
+    SaveCompanyAccess --> CompanyAccessSuccess[Service Access Updated]
+    CompanyAccessSuccess --> CompanyPolicy
+    
+    %% Group Policy Flow
+    SelectLevel -->|Group Policy| SelectGroup[Select User Group]
+    SelectGroup --> GroupPolicy[Group Policy Page]
+    GroupPolicy --> GroupView[View Current Policy:<br/>- Inherited from Company<br/>- Group Overrides]
+    GroupView --> GroupAction{Choose Action}
+    
+    GroupAction -->|Set Group Spending Limit| GroupSpendForm[Edit Group Spending Limit]
+    GroupSpendForm --> GroupLimitChoice{Set Limit Type}
+    GroupLimitChoice -->|Override Company| EnterGroupLimit[Enter Group Monthly Limit]
+    GroupLimitChoice -->|Inherit Company| InheritCompanyLimit[Use Company Limit]
+    EnterGroupLimit --> ValidateGroupLimit{Valid & Within<br/>Company Limit?}
+    ValidateGroupLimit -->|No| GroupSpendForm
+    ValidateGroupLimit -->|Yes| SaveGroupLimit[Save Group Limit]
+    InheritCompanyLimit --> SaveGroupLimit
+    SaveGroupLimit --> GroupLimitSuccess[Group Limit Updated]
+    GroupLimitSuccess --> GroupPolicy
+    
+    GroupAction -->|Set Group Service Access| GroupServiceForm[Group Service Access Control]
+    GroupServiceForm --> GroupAccessChoice{Access Rule Type}
+    GroupAccessChoice -->|Additional Restrictions| AddGroupRestrictions[Add More Restrictions<br/>Beyond Company Policy]
+    GroupAccessChoice -->|Inherit Company| InheritCompanyAccess[Use Company Access Rules]
+    AddGroupRestrictions --> ValidateGroupAccess{Rules Compatible<br/>with Company Policy?}
+    ValidateGroupAccess -->|No - Conflict| GroupServiceForm
+    ValidateGroupAccess -->|Yes| SaveGroupAccess[Save Group Access Rules]
+    InheritCompanyAccess --> SaveGroupAccess
+    SaveGroupAccess --> GroupAccessSuccess[Group Access Updated]
+    GroupAccessSuccess --> GroupPolicy
+    
+    %% Individual Policy Flow
+    SelectLevel -->|Individual Policy| SelectEmployee[Select Employee]
+    SelectEmployee --> IndividualPolicy[Individual Employee Policy Page]
+    IndividualPolicy --> IndividualView[View Effective Policy:<br/>- Inherited from Company<br/>- Inherited from Group<br/>- Individual Overrides]
+    IndividualView --> IndividualAction{Choose Action}
+    
+    IndividualAction -->|Set Individual Spending Limit| IndividualSpendForm[Edit Individual Spending Limit]
+    IndividualSpendForm --> IndividualLimitChoice{Set Limit Type}
+    IndividualLimitChoice -->|Override| EnterIndividualLimit[Enter Individual Monthly Limit]
+    IndividualLimitChoice -->|Inherit| InheritParentLimit[Use Group/Company Limit]
+    EnterIndividualLimit --> ValidateIndividualLimit{Valid & Within<br/>Parent Limits?}
+    ValidateIndividualLimit -->|No| IndividualSpendForm
+    ValidateIndividualLimit -->|Yes| SaveIndividualLimit[Save Individual Limit]
+    InheritParentLimit --> SaveIndividualLimit
+    SaveIndividualLimit --> IndividualLimitSuccess[Individual Limit Updated]
+    IndividualLimitSuccess --> IndividualPolicy
+    
+    IndividualAction -->|Set Individual Service Access| IndividualServiceForm[Individual Service Access Control]
+    IndividualServiceForm --> IndividualAccessChoice{Access Rule Type}
+    IndividualAccessChoice -->|Grant Exception| GrantAccess[Grant Access to<br/>Additional Services]
+    IndividualAccessChoice -->|Add Restrictions| RestrictAccess[Restrict Specific Services]
+    IndividualAccessChoice -->|Inherit| InheritParentAccess[Use Group/Company Rules]
+    GrantAccess --> ValidateIndividualAccess{Rules Compatible<br/>with Parent Policies?}
+    RestrictAccess --> ValidateIndividualAccess
+    ValidateIndividualAccess -->|No - Conflict| IndividualServiceForm
+    ValidateIndividualAccess -->|Yes| SaveIndividualAccess[Save Individual Access Rules]
+    InheritParentAccess --> SaveIndividualAccess
+    SaveIndividualAccess --> IndividualAccessSuccess[Individual Access Updated]
+    IndividualAccessSuccess --> IndividualPolicy
+    
+    %% Policy Validation Note
+    IndividualPolicy --> PolicyNote[Note: During Transaction Authorization<br/>MO validates against effective policy<br/>resolved from hierarchy]
+    
+    %% Back to Dashboard
+    CompanyAction -->|Back| PolicyDashboard
+    GroupAction -->|Back| PolicyDashboard
+    IndividualAction -->|Back| PolicyDashboard
+    
+    %% Styling
+    classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
+    classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
+    classDef viewStyle fill:#3498DB,stroke:#2874A6,stroke-width:2px,color:#fff
+    classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    classDef noteStyle fill:#E67E22,stroke:#CA6F1E,stroke-width:2px,color:#fff
+    
+    class Start,PolicyDashboard startStyle
+    class CompanyPolicy,GroupPolicy,IndividualPolicy,ShowHierarchy,CompanyView,GroupView,IndividualView,DisplayEffective viewStyle
+    class CompanySpendForm,CompanyServiceForm,GroupSpendForm,GroupServiceForm,IndividualSpendForm,IndividualServiceForm,EnterCompanyLimit,EnterGroupLimit,EnterIndividualLimit,WhitelistCompany,BlacklistCompany,AddGroupRestrictions,GrantAccess,RestrictAccess,SelectGroup,SelectEmployee,SelectPolicyView processStyle
+    class SelectLevel,CompanyAction,GroupAction,IndividualAction,SelectAccessType,GroupLimitChoice,GroupAccessChoice,IndividualLimitChoice,IndividualAccessChoice,ValidateCompanyLimit,ValidateGroupLimit,ValidateGroupAccess,ValidateIndividualLimit,ValidateIndividualAccess,EffectiveAction decisionStyle
+    class CompanySuccess,CompanyAccessSuccess,GroupLimitSuccess,GroupAccessSuccess,IndividualLimitSuccess,IndividualAccessSuccess successStyle
+    class PolicyNote noteStyle
 ```
 
-### 4.9. Flow 9: Transaction Monitoring & Review
+### 4.9. Flow 9: Transaction Monitoring
 
 This flow shows how an admin monitors company transactions.
 
 ```mermaid
-graph TD
-    A[Admin navigates to 'Billing & Reporting'] --> B[Views the 'Transaction Log' tab by default]
-    B --> C[Sees a real-time, paginated list of all employee transactions]
-    C --> D{Needs to find a specific transaction?}
-    D -- Yes --> E[Uses search bar to find by employee or service]
-    D -- No --> F[Browses the list]
-
-    E --> G[Uses filters to narrow by date range, amount, or group]
-    G --> F
+flowchart TD
+    Start([Corporate Admin Portal]) --> TransactionLog[Transaction Log Page]
     
-    F --> H[Clicks on a transaction row to view details]
-    H --> I[Transaction Details modal appears with full information]
-    I --> J[Admin reviews the details]
-    J --> K{Is there an issue?}
-    K -- Yes --> L[Clicks 'Initiate Dispute']
-    L --> M((Redirect to Dispute Flow))
-    K -- No --> N[Closes modal]
-    N --> Success((Flow Complete))
+    TransactionLog --> ShowTransactions[Display Real-Time Transactions:<br/>Employee, Group, Service, Amount, Date]
+    
+    ShowTransactions --> Action{Choose Action}
+    
+    Action -->|Filter/Search| FilterPanel[Open Filter Panel]
+    FilterPanel --> SelectFilters[Select Filters:<br/>Employee, Group, Publisher,<br/>Date Range, Amount]
+    SelectFilters --> ApplyFilters[Apply Filters]
+    ApplyFilters --> ShowTransactions
+    
+    Action -->|View Details| SelectTransaction[Select Transaction]
+    SelectTransaction --> TransactionDetails[Transaction Details Page]
+    TransactionDetails --> ShowDetails[Display Full Details]
+    ShowDetails --> DetailAction{Action}
+    DetailAction -->|Dispute| GoToDispute[Go to Dispute Flow]
+    DetailAction -->|Back| ShowTransactions
+    
+    Action -->|Export| SelectFormat{Select Format}
+    SelectFormat -->|CSV| ExportCSV[Generate CSV]
+    SelectFormat -->|Excel| ExportExcel[Generate Excel]
+    ExportCSV --> DownloadFile[Download File]
+    ExportExcel --> DownloadFile
+    DownloadFile --> ShowTransactions
+    
+    Action -->|Refresh| ShowTransactions
+    
+    classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    classDef viewStyle fill:#3498DB,stroke:#2874A6,stroke-width:2px,color:#fff
+    classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
+    classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
+    
+    class Start startStyle
+    class TransactionLog,ShowTransactions,TransactionDetails,ShowDetails viewStyle
+    class FilterPanel,SelectFilters,ApplyFilters,SelectTransaction,ExportCSV,ExportExcel processStyle
+    class Action,SelectFormat,DetailAction decisionStyle
+    class DownloadFile successStyle
 ```
-
-### 4.10. Flow 10: Dispute Initiation and Tracking (with Automatic Compensation)
-
-This flow details how a dispute is initiated and automatically handled.
+### 4.10. Flow 10: Flow 2: Current Billing Cycle Monitoring
 
 ```mermaid
-graph TD
-    A[Admin is viewing a transaction detail] --> B[Clicks 'Initiate Dispute' button]
-    B --> C[Dispute Modal appears]
-    C --> D[Admin selects a reason for the dispute (e.g., 'Duplicate Charge')]
-    D --> E[Admin adds optional notes]
-    E --> F[Clicks 'Submit Dispute']
+flowchart TD
+    Start([Corporate Admin Portal]) --> BillingCycle[Current Billing Cycle Page]
     
-    F --> G((System Processing))
-    G --> H[System automatically marks transaction as 'Disputed']
-    H --> I[System immediately applies a credit for the disputed amount to the corporate account]
+    BillingCycle --> ShowOverview[Display Overview:<br/>Period, Balance, Credit Limit,<br/>Utilization %, Transactions]
     
-    subgraph "Admin Confirmation"
-        I --> J[Modal closes]
-        J --> K[Success toast: 'Dispute submitted. A credit of $45.00 has been applied.']
-        K --> L[Transaction in the log now shows a 'Disputed/Compensated' status]
-        L --> M[The dispute is logged in the 'Dispute Management' section]
-    end
-
-    M --> Success((Flow Complete))
+    ShowOverview --> CheckUtilization{Credit<br/>Utilization}
+    CheckUtilization -->|≥ 80%| ShowAlert[Alert: Approaching Limit]
+    CheckUtilization -->|≥ 90%| ShowWarning[Warning: Near Limit]
+    CheckUtilization -->|= 100%| ShowCritical[Critical: Limit Reached]
+    ShowAlert --> ContinueView[Continue]
+    ShowWarning --> ContinueView
+    ShowCritical --> ContinueView
+    CheckUtilization -->|< 80%| ContinueView
+    
+    ContinueView --> ShowBreakdowns[Display Spending Breakdowns]
+    ShowBreakdowns --> Action{Choose View}
+    
+    Action -->|By Group| GroupBreakdown[User Group Breakdown]
+    GroupBreakdown --> ShowGroups[Display Group Spending]
+    ShowGroups --> GroupAction{Action}
+    GroupAction -->|View Details| GroupDetails[Group Details]
+    GroupDetails --> GroupAction
+    GroupAction -->|Back| ShowBreakdowns
+    
+    Action -->|By Employee| EmployeeBreakdown[Employee Breakdown]
+    EmployeeBreakdown --> ShowEmployees[Display Employee Spending]
+    ShowEmployees --> EmployeeAction{Action}
+    EmployeeAction -->|View Details| EmployeeDetails[Employee Details]
+    EmployeeDetails --> EmployeeAction
+    EmployeeAction -->|Back| ShowBreakdowns
+    
+    Action -->|By Publisher| PublisherBreakdown[Publisher Breakdown]
+    PublisherBreakdown --> ShowPublishers[Display Publisher Spending]
+    ShowPublishers --> PublisherAction{Action}
+    PublisherAction -->|View Details| PublisherDetails[Publisher Details]
+    PublisherDetails --> PublisherAction
+    PublisherAction -->|Back| ShowBreakdowns
+    
+    Action -->|Export| ExportCycle[Generate Report]
+    ExportCycle --> DownloadReport[Download Report]
+    DownloadReport --> ShowBreakdowns
+    
+    Action -->|Refresh| BillingCycle
+    
+    classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    classDef viewStyle fill:#3498DB,stroke:#2874A6,stroke-width:2px,color:#fff
+    classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
+    classDef alertStyle fill:#E74C3C,stroke:#C0392B,stroke-width:2px,color:#fff
+    classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
+    
+    class Start startStyle
+    class BillingCycle,ShowOverview,ShowBreakdowns,GroupBreakdown,ShowGroups,EmployeeBreakdown,ShowEmployees,PublisherBreakdown,ShowPublishers viewStyle
+    class ExportCycle,GroupDetails,EmployeeDetails,PublisherDetails processStyle
+    class Action,GroupAction,EmployeeAction,PublisherAction,CheckUtilization decisionStyle
+    class ShowAlert,ShowWarning,ShowCritical alertStyle
+    class DownloadReport successStyle
 ```
 
-### 4.11. Flow 11: Viewing & Downloading Statements
-
-This flow shows how an admin can view and download monthly billing statements.
+### 4.11. Flow 11: Monthly Statement & Payment Tracking
 
 ```mermaid
-graph TD
-    A[Admin navigates to 'Statements' page] --> B[Views a list of all past monthly statements, sorted by date]
-    B --> C[Each statement shows billing period, total amount, and status]
-    C --> D{Admin selects an action for a specific statement}
+flowchart TD
+    Start([Corporate Admin Portal]) --> StatementList[Monthly Statements Page]
     
-    subgraph Actions
-        D -- Clicks 'View Details' --> E[Displays detailed, read-only, paginated view of all transactions]
-        D -- Clicks 'Download' --> F[Presents options: 'Download as PDF' or 'Download as CSV']
-    end
+    StatementList --> ShowList[Display All Statements:<br/>Period, Amount, Status, Due Date]
+    
+    ShowList --> ListAction{Choose Action}
+    
+    ListAction -->|View Statement| SelectStatement[Select Statement]
+    SelectStatement --> StatementDetails[Statement Details Page]
+    
+    StatementDetails --> ShowSummary[Display Summary:<br/>Charges, Credits, Net Due]
+    
+    ShowSummary --> ShowItemization[Display Itemization:<br/>By Group, Employee, Publisher]
+    
+    ShowItemization --> StatementAction{Choose Action}
+    
+    StatementAction -->|Download PDF| GeneratePDF[Generate PDF]
+    GeneratePDF --> DownloadPDF[Download PDF]
+    DownloadPDF --> StatementDetails
+    
+    StatementAction -->|View Payment Status| CheckStatus{Payment<br/>Status?}
+    CheckStatus -->|Paid| ShowPaid[Display Payment Info:<br/>Payment Date, Amount,<br/>Reference Number]
+    ShowPaid --> ViewReceipt[View Receipt]
+    ViewReceipt --> StatementDetails
+    
+    CheckStatus -->|Unpaid| ShowUnpaid[Display Unpaid Status:<br/>Amount Due, Due Date,<br/>MO Contact Info]
+    ShowUnpaid --> PaymentNote[Note: Payment must be<br/>processed directly with MO<br/>outside this portal]
+    PaymentNote --> StatementDetails
+    
+    ListAction -->|Payment History| PaymentHistory[Payment History Page]
+    PaymentHistory --> ShowHistory[Display All Payments:<br/>Payment Date, Amount,<br/>Statement Period, Status]
+    ShowHistory --> BackToList[Back to Statements]
+    BackToList --> StatementList
+    
+    StatementAction -->|Back| StatementList
+    
+    ShowList --> ProcessNote[External Payment Process:<br/>1. MO generates and sends statement<br/>2. Admin downloads PDF from portal<br/>3. Payment processed with MO externally<br/>4. MO updates payment status in system<br/>5. Portal reflects updated status]
+    
+    classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    classDef viewStyle fill:#3498DB,stroke:#2874A6,stroke-width:2px,color:#fff
+    classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
+    classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
+    classDef noteStyle fill:#E67E22,stroke:#CA6F1E,stroke-width:2px,color:#fff
+    
+    class Start startStyle
+    class StatementList,ShowList,StatementDetails,ShowSummary,ShowItemization,PaymentHistory,ShowHistory viewStyle
+    class SelectStatement,GeneratePDF,DownloadPDF processStyle
+    class ListAction,StatementAction,CheckStatus decisionStyle
+    class ViewReceipt successStyle
+    class PaymentNote,ProcessNote noteStyle
+```
 
-    E --> H[Admin can return to statements list]
-    F -- Selects Format --> G((System generates and initiates file download))
-    G --> Success((Flow Complete))
+### 4.12. Flow 12: Employee Dispute Submission (via mPass App)
+
+This flow details how a dispute is initiated by employees and automatically handled.
+
+```mermaid
+flowchart TD
+    Start([Employee via mPass App]) --> ViewTransactions[View Personal Transaction History]
+    
+    ViewTransactions --> SelectTransaction[Select Transaction to Dispute]
+    
+    SelectTransaction --> DisputeForm[Open Dispute Form]
+    
+    DisputeForm --> ShowTransInfo[Display Transaction Details:<br/>Service, Amount, Date]
+    
+    ShowTransInfo --> EnterReason[Enter Dispute Reason]
+    
+    EnterReason --> ReviewDispute[Review Dispute Details]
+    
+    ReviewDispute --> ConfirmAction{Action}
+    ConfirmAction -->|Cancel| ViewTransactions
+    ConfirmAction -->|Submit| SubmitDispute[Submit Dispute]
+    
+    SubmitDispute --> AutoProcess[System Automatically Processes]
+    
+    AutoProcess --> ApplyCredit[Apply Immediate Credit<br/>to Corporate Account]
+    
+    %% Employee App
+    ApplyCredit --> EmployeeBranch[mPass App Flow]
+    EmployeeBranch --> NotifyEmployee[Send Confirmation to Employee]
+    NotifyEmployee --> ShowConfirmation[Show Confirmation:<br/>Dispute Accepted<br/>Credit Applied<br/>Reference Number]
+    ShowConfirmation --> ViewDisputeHistory[View My Dispute History]
+    ViewDisputeHistory --> EmployeeEnd([Employee Flow End])
+    
+    %% Admin Portal
+    ApplyCredit --> AdminBranch[Admin Portal Flow]
+    AdminBranch --> NotifyAdmin[Send Notification to<br/>Corporate Admin]
+    NotifyAdmin --> LogDispute[Log Dispute in<br/>Admin Dispute Management]
+    LogDispute --> UpdateAdminView[Dispute Visible in<br/>Admin Portal]
+    UpdateAdminView --> AdminEnd([Admin Portal Updated])
+    
+    classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    classDef viewStyle fill:#3498DB,stroke:#2874A6,stroke-width:2px,color:#fff
+    classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
+    classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
+    classDef systemStyle fill:#E67E22,stroke:#CA6F1E,stroke-width:2px,color:#fff
+    classDef branchStyle fill:#95A5A6,stroke:#7F8C8D,stroke-width:2px,color:#fff
+    
+    class Start,EmployeeEnd,AdminEnd startStyle
+    class ViewTransactions,DisputeForm,ShowTransInfo,ShowConfirmation,ViewDisputeHistory viewStyle
+    class SelectTransaction,EnterReason,ReviewDispute,SubmitDispute,NotifyEmployee,NotifyAdmin,LogDispute,UpdateAdminView processStyle
+    class ConfirmAction decisionStyle
+    class Split,EmployeeBranch,AdminBranch branchStyle
+    class AutoProcess,ApplyCredit,UpdateCTS systemStyle
+```
+
+### 4.13. Flow 13: Corporate Admin Dispute Submission
+
+This flow details how a dispute is initiated by corporate admin and automatically handled.
+
+```mermaid
+flowchart TD
+    Start([Corporate Admin Portal]) --> EntryPoint{Entry Point}
+    
+    EntryPoint -->|From Transaction Log| TransactionLog[Company Transaction Log]
+    EntryPoint -->|From Dispute Log| DisputeLog[Dispute Management Page]
+    
+    TransactionLog --> SelectTransaction[Select Transaction to Dispute]
+    DisputeLog --> SubmitNew[Submit New Dispute]
+    SubmitNew --> SelectTransaction
+    
+    SelectTransaction --> DisputeForm[Open Dispute Form]
+    
+    DisputeForm --> ShowTransInfo[Display Transaction Details:<br/>Employee, Service, Amount, Date]
+    
+    ShowTransInfo --> EnterReason[Enter Dispute Reason]
+    
+    EnterReason --> ReviewDispute[Review Dispute Details]
+    
+    ReviewDispute --> ConfirmAction{Action}
+    ConfirmAction -->|Cancel| TransactionLog
+    ConfirmAction -->|Submit| SubmitDispute[Submit Dispute]
+    
+    SubmitDispute --> AutoProcess[System Automatically Processes]
+    
+    AutoProcess --> ApplyCredit[Apply Immediate Credit<br/>to Corporate Account]
+    
+    ApplyCredit --> UpdateCTS[Update Corporate Trust Score]
+    
+    UpdateCTS --> NotifyAdmin[Send Confirmation to Admin]
+    
+    NotifyAdmin --> NotifyEmployee[Notify Affected Employee<br/>if applicable]
+    
+    NotifyEmployee --> LogDispute[Log Dispute in System]
+    
+    LogDispute --> DisputeComplete[Dispute Complete]
+    
+    DisputeComplete --> ShowConfirmation[Show Confirmation:<br/>Dispute Accepted<br/>Credit Applied<br/>Reference Number]
+    
+    ShowConfirmation --> ViewDisputeLog[View Dispute Log]
+    
+    ViewDisputeLog --> End([End])
+    
+    classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    classDef viewStyle fill:#3498DB,stroke:#2874A6,stroke-width:2px,color:#fff
+    classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
+    classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
+    classDef systemStyle fill:#E67E22,stroke:#CA6F1E,stroke-width:2px,color:#fff
+    
+    class Start,End startStyle
+    class TransactionLog,DisputeLog,DisputeForm,ShowTransInfo,ShowConfirmation,ViewDisputeLog viewStyle
+    class SelectTransaction,SubmitNew,EnterReason,ReviewDispute,SubmitDispute,NotifyAdmin,NotifyEmployee,LogDispute processStyle
+    class EntryPoint,ConfirmAction decisionStyle
+    class DisputeComplete successStyle
+    class AutoProcess,ApplyCredit,UpdateCTS systemStyle
+```
+### 4.14. Flow 14: Corporate Admin Dispute Monitoring & Reporting
+
+```Mermaid
+flowchart TD
+    Start([Corporate Admin Portal]) --> DisputeLog[Dispute Management Page]
+    
+    DisputeLog --> ShowAllDisputes[Display All Disputes:<br/>Date, Employee, Transaction,<br/>Amount, Reason, Credit, Status]
+    
+    ShowAllDisputes --> Action{Choose Action}
+    
+    Action -->|Filter/Search| FilterPanel[Open Filter Panel]
+    FilterPanel --> SelectFilters[Select Filters:<br/>Employee, Date Range,<br/>Amount, Reason]
+    SelectFilters --> ApplyFilters[Apply Filters]
+    ApplyFilters --> ShowAllDisputes
+    
+    Action -->|View Details| SelectDispute[Select Dispute]
+    SelectDispute --> DisputeDetails[Dispute Details Page]
+    DisputeDetails --> ShowDetails[Display:<br/>Original Transaction<br/>Dispute Reason<br/>Submitted By<br/>Credit Amount<br/>Timestamp]
+    ShowDetails --> DetailAction{Action}
+    DetailAction -->|View Transaction| ViewTransaction[View Original Transaction]
+    DetailAction -->|Back| ShowAllDisputes
+    ViewTransaction --> DisputeDetails
+    
+    Action -->|Export| ExportDisputes[Export Dispute Log]
+    ExportDisputes --> SelectFormat{Format}
+    SelectFormat -->|CSV| GenerateCSV[Generate CSV]
+    SelectFormat -->|Excel| GenerateExcel[Generate Excel]
+    GenerateCSV --> DownloadFile[Download File]
+    GenerateExcel --> DownloadFile
+    DownloadFile --> ShowAllDisputes
+    
+    Action -->|View on Statement| StatementView[View Monthly Statements]
+    StatementView --> ShowStatementCredits[Show Dispute Credits<br/>Itemized on Statement]
+    ShowStatementCredits --> DisputeLog
+    
+    Action -->|Refresh| DisputeLog
+    
+    ShowAllDisputes --> AlertNote[Note: Admin receives notifications<br/>when employees submit disputes]
+    
+    classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    classDef viewStyle fill:#3498DB,stroke:#2874A6,stroke-width:2px,color:#fff
+    classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
+    classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
+    classDef noteStyle fill:#E67E22,stroke:#CA6F1E,stroke-width:2px,color:#fff
+    
+    class Start startStyle
+    class DisputeLog,ShowAllDisputes,DisputeDetails,ShowDetails,StatementView viewStyle
+    class FilterPanel,SelectFilters,ApplyFilters,SelectDispute,ExportDisputes,GenerateCSV,GenerateExcel,ViewTransaction processStyle
+    class Action,DetailAction,SelectFormat decisionStyle
+    class DownloadFile successStyle
+    class AlertNote noteStyle
 ```
 
 ### 4.12. MO Admin Flows
@@ -516,69 +924,366 @@ graph TD
 #### MO Flow 1: New Enterprise Application Review
 
 ```mermaid
-graph TD
-    A[MO Admin logs in to the MO Portal] --> B[Navigates to the 'Application Queue']
-    B --> C[Views a list of pending corporate applications]
-    C --> D[Selects an application to review]
-    D --> E[Views all submitted company and admin details]
-    E --> F{Decision Time}
-    F -- Deny --> G[Clicks 'Deny']
-    G --> H[Enters reason for denial in a modal]
-    H --> I((System: Notifies enterprise admin of denial))
-    I --> J[Application moves to 'Reviewed' queue with 'Denied' status]
-    J --> End((Flow Complete))
-
-    F -- Approve --> K[Clicks 'Approve']
-    K --> L[Approval modal appears]
-    L --> M[MO Admin sets the initial monthly credit limit for the enterprise]
-    M --> N[Clicks 'Confirm Approval']
-    N --> O((System: Creates corporate account, sends approval email))
-    O --> P[Application moves to 'Reviewed' queue with 'Approved' status]
-    P --> End
+flowchart TD
+    Start([MO Admin Portal]) --> Dashboard[Application Queue Dashboard]
+    
+    Dashboard --> ShowQueue[Display Application Queue:<br/>Pending Applications<br/>Company Name<br/>Submission Date<br/>Status]
+    
+    ShowQueue --> QueueAction{Choose Action}
+    
+    QueueAction -->|Review Application| SelectApp[Select Application]
+    SelectApp --> AppDetails[Application Details Page]
+    
+    AppDetails --> ShowAppInfo[Display Application Info:<br/>- Company Details<br/>- Legal Entity Information<br/>- Tax ID<br/>- Primary Contact<br/>- Business Type<br/>- Requested Services]
+    
+    ShowAppInfo --> ReviewAction{Review Decision}
+    
+    ReviewAction -->|Deny| DenyForm[Denial Form]
+    DenyForm --> EnterDenyReason[Enter Denial Reason]
+    EnterDenyReason --> ConfirmDeny{Confirm Denial?}
+    ConfirmDeny -->|Cancel| AppDetails
+    ConfirmDeny -->|Confirm| ProcessDeny[Process Denial]
+    ProcessDeny --> NotifyDenial[Send Denial Email<br/>with Reason]
+    NotifyDenial --> UpdateStatus1[Update Status: Denied]
+    UpdateStatus1 --> ShowQueue
+    
+    ReviewAction -->|Approve| ApprovalForm[Approval Form]
+    ApprovalForm --> SetCreditLimit[Set Master Credit Limit]
+    SetCreditLimit --> ReviewApproval[Review Approval Details]
+    ReviewApproval --> ConfirmApprove{Confirm Approval?}
+    ConfirmApprove -->|Cancel| AppDetails
+    ConfirmApprove -->|Confirm| ProcessApproval[Process Approval]
+    
+    ProcessApproval --> CreateAccount[Create Corporate mPass Account]
+    CreateAccount --> AssignCreditLimit[Assign Credit Limit]
+    AssignCreditLimit --> CreateAdminAccess[Create Admin Portal Access]
+    CreateAdminAccess --> SendApprovalEmail[Send Approval Email<br/>with Login Instructions]
+    SendApprovalEmail --> UpdateStatus2[Update Status: Approved]
+    UpdateStatus2 --> ApprovalComplete[Approval Complete]
+    ApprovalComplete --> ShowQueue
+    
+    QueueAction -->|Filter/Sort| FilterQueue[Apply Filters:<br/>Date, Status, Company]
+    FilterQueue --> ShowQueue
+    
+    QueueAction -->|Refresh| ShowQueue
+    
+    classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    classDef viewStyle fill:#3498DB,stroke:#2874A6,stroke-width:2px,color:#fff
+    classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
+    classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
+    classDef errorStyle fill:#E74C3C,stroke:#C0392B,stroke-width:2px,color:#fff
+    
+    class Start startStyle
+    class Dashboard,ShowQueue,AppDetails,ShowAppInfo viewStyle
+    class SelectApp,DenyForm,EnterDenyReason,ProcessDeny,NotifyDenial,ApprovalForm,SetCreditLimit,ReviewApproval,ProcessApproval,CreateAccount,AssignCreditLimit,CreateAdminAccess,SendApprovalEmail,FilterQueue processStyle
+    class QueueAction,ReviewAction,ConfirmDeny,ConfirmApprove decisionStyle
+    class ApprovalComplete successStyle
+    class UpdateStatus1,UpdateStatus2 processStyle
 ```
 
 #### MO Flow 2: Corporate Account Lifecycle Management
 
 ```mermaid
-graph TD
-    A[MO Admin navigates to 'Corporate Accounts'] --> B[Searches for a specific company]
-    B --> C[Finds the company and views its details page]
-    C --> D{Selects an Action}
+flowchart TD
+    Start([MO Admin Portal]) --> Dashboard[Corporate Portfolio Dashboard]
     
-    D -- Suspend Account --> E1[Clicks 'Suspend']
-    E1 --> F1[Confirmation modal appears with warning]
-    F1 --> G1[Confirms suspension]
-    G1 --> H((System: Temporarily deactivates account and notifies admin))
-    H --> I[Account status changes to 'Suspended']
-    I --> Success((Flow Complete))
+    Dashboard --> ShowPortfolio[Display All Corporate Accounts:<br/>Company Name<br/>Status<br/>Credit Limit<br/>Current Balance<br/>Utilization %<br/>Employee Count]
     
-    D -- Reactivate Account --> E2[Clicks 'Reactivate']
-    E2 --> F2[Confirmation modal appears]
-    F2 --> G2[Confirms reactivation]
-    G2 --> H
+    ShowPortfolio --> PortfolioAction{Choose Action}
     
-    D -- Adjust Credit Limit --> E3[Clicks 'Adjust Credit Limit']
-    E3 --> F3[Modal appears to enter new limit]
-    F3 --> G3[Enters new limit and saves]
-    G3 --> H
+    PortfolioAction -->|View Details| SelectCorp[Select Corporate Account]
+    SelectCorp --> CorpDetails[Corporate Account Details]
+    
+    CorpDetails --> ShowCorpInfo[Display:<br/>- Company Information<br/>- Credit Limit & Balance<br/>- Utilization Percentage<br/>- Account Status<br/>- Employee Count<br/>- Transaction Summary<br/>- Spending Trends]
+    
+    ShowCorpInfo --> CorpAction{Choose Action}
+    
+    CorpAction -->|Adjust Credit Limit| CreditForm[Credit Limit Adjustment Form]
+    CreditForm --> EnterNewLimit[Enter New Credit Limit]
+    EnterNewLimit --> EnterReason[Enter Adjustment Reason]
+    EnterReason --> ReviewLimit[Review Changes]
+    ReviewLimit --> ConfirmLimit{Confirm?}
+    ConfirmLimit -->|Cancel| CorpDetails
+    ConfirmLimit -->|Confirm| ApplyLimit[Apply New Credit Limit]
+    ApplyLimit --> LogLimitChange[Log Change with Reason]
+    LogLimitChange --> NotifyAdmin1[Notify Corporate Admin]
+    NotifyAdmin1 --> LimitSuccess[Credit Limit Updated]
+    LimitSuccess --> CorpDetails
+    
+    CorpAction -->|Suspend Account| SuspendForm[Suspend Account Form]
+    SuspendForm --> EnterSuspendReason[Enter Suspension Reason]
+    EnterSuspendReason --> ReviewSuspend[Review Suspension]
+    ReviewSuspend --> ConfirmSuspend{Confirm?}
+    ConfirmSuspend -->|Cancel| CorpDetails
+    ConfirmSuspend -->|Confirm| ProcessSuspend[Suspend Corporate Account]
+    ProcessSuspend --> BlockTransactions[Block All Transactions]
+    BlockTransactions --> NotifyAdmin2[Notify Corporate Admin]
+    NotifyAdmin2 --> SuspendSuccess[Account Suspended]
+    SuspendSuccess --> CorpDetails
+    
+    CorpAction -->|Resume Account| ResumeForm[Resume Account Form]
+    ResumeForm --> EnterResumeReason[Enter Resume Reason]
+    EnterResumeReason --> ReviewResume[Review Resumption]
+    ReviewResume --> ConfirmResume{Confirm?}
+    ConfirmResume -->|Cancel| CorpDetails
+    ConfirmResume -->|Confirm| ProcessResume[Resume Corporate Account]
+    ProcessResume --> EnableTransactions[Enable Transactions]
+    EnableTransactions --> NotifyAdmin3[Notify Corporate Admin]
+    NotifyAdmin3 --> ResumeSuccess[Account Resumed]
+    ResumeSuccess --> CorpDetails
+    
+    CorpAction -->|View Transactions| ViewTrans[View Transaction History]
+    ViewTrans --> CorpDetails
+    
+    CorpAction -->|View Employees| ViewEmployees[View Employee List]
+    ViewEmployees --> CorpDetails
+    
+    CorpAction -->|Back| ShowPortfolio
+    
+    PortfolioAction -->|Search/Filter| FilterPortfolio[Apply Filters:<br/>Status, Credit Range,<br/>Utilization, Name]
+    FilterPortfolio --> ShowPortfolio
+    
+    PortfolioAction -->|Export| ExportPortfolio[Export Corporate List]
+    ExportPortfolio --> DownloadFile[Download Report]
+    DownloadFile --> ShowPortfolio
+    
+    PortfolioAction -->|Refresh| ShowPortfolio
+    
+    classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    classDef viewStyle fill:#3498DB,stroke:#2874A6,stroke-width:2px,color:#fff
+    classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
+    classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
+    
+    class Start startStyle
+    class Dashboard,ShowPortfolio,CorpDetails,ShowCorpInfo,ViewTrans,ViewEmployees viewStyle
+    class SelectCorp,CreditForm,EnterNewLimit,EnterReason,ReviewLimit,ApplyLimit,LogLimitChange,NotifyAdmin1,SuspendForm,EnterSuspendReason,ReviewSuspend,ProcessSuspend,BlockTransactions,NotifyAdmin2,ResumeForm,EnterResumeReason,ReviewResume,ProcessResume,EnableTransactions,NotifyAdmin3,FilterPortfolio,ExportPortfolio processStyle
+    class PortfolioAction,CorpAction,ConfirmLimit,ConfirmSuspend,ConfirmResume decisionStyle
+    class LimitSuccess,SuspendSuccess,ResumeSuccess,DownloadFile successStyle
 ```
 
-#### MO Flow 3: Monthly Statement Generation
+#### MO Flow 3: Corporate Billing & Payment Management
 
 ```mermaid
-graph TD
-    A[End of the billing cycle occurs] --> B((System: Automatically generates draft statements for all corporate accounts))
-    B --> C[MO Admin navigates to 'Enterprise Billing' -> 'Statements']
-    C --> D[Admin filters for 'Draft' statements for the previous month]
-    D --> E[Admin can spot-check a few statements for accuracy]
-    E --> F{Ready to finalize?}
-    F -- No --> G[Admin makes manual adjustments if needed (rare)]
-    F -- Yes --> H[Admin selects all draft statements]
-    H --> I[Clicks 'Finalize & Send Statements']
-    I --> J((System: Processes the queue))
-    J --> K[Statements are finalized and status changed to 'Unpaid']
-    K --> L[System sends email notifications to all enterprise admins with a link to view and pay their statement]
-    L --> Success((Flow Complete))
+flowchart TD
+    Start([MO Admin Portal]) --> Dashboard[Billing Management Dashboard]
+    
+    Dashboard --> ShowOverview[Display Overview:<br/>Active Billing Cycles<br/>Overdue Accounts<br/>Payment Due This Month<br/>Total Outstanding]
+    
+    ShowOverview --> BillingAction{Choose Action}
+    
+    BillingAction -->|View All Cycles| AllCycles[All Billing Cycles View]
+    AllCycles --> ShowCycles[Display All Corporate<br/>Billing Cycles:<br/>Company, Period, Balance,<br/>Due Date, Status]
+    ShowCycles --> CycleFilter[Filter by Status,<br/>Due Date, Company]
+    CycleFilter --> CycleList[View Filtered List]
+    CycleList --> SelectCycle[Select Billing Cycle]
+    SelectCycle --> CycleDetails[Billing Cycle Details]
+    CycleDetails --> ShowCycleDetail[Display:<br/>- Transaction Summary<br/>- Total Charges<br/>- Dispute Credits<br/>- Net Amount Due<br/>- Payment Status]
+    ShowCycleDetail --> CycleAction{Action}
+    CycleAction -->|Generate Statement| GenerateStmt[Generate Monthly Statement]
+    GenerateStmt --> CreatePDF[Create PDF Statement]
+    CreatePDF --> SendStatement[Send Statement to<br/>Corporate Admin]
+    SendStatement --> StmtSent[Statement Sent]
+    StmtSent --> CycleDetails
+    CycleAction -->|Back| CycleList
+    
+    BillingAction -->|Manage Payments| PaymentMgmt[Payment Management View]
+    PaymentMgmt --> ShowPayments[Display Payment Status<br/>for All Corporates]
+    ShowPayments --> SelectPayment[Select Corporate Account]
+    SelectPayment --> PaymentDetails[Payment Details Page]
+    PaymentDetails --> ShowPaymentInfo[Display:<br/>- Outstanding Balance<br/>- Payment History<br/>- Due Date<br/>- Payment Method]
+    ShowPaymentInfo --> PaymentAction{Action}
+    
+    PaymentAction -->|Record Payment| RecordForm[Record Payment Form]
+    RecordForm --> EnterAmount[Enter Payment Amount]
+    EnterAmount --> EnterMethod[Enter Payment Method]
+    EnterMethod --> EnterDate[Enter Payment Date]
+    EnterDate --> EnterRef[Enter Reference Number]
+    EnterRef --> ReviewPayment[Review Payment Details]
+    ReviewPayment --> ConfirmPayment{Confirm?}
+    ConfirmPayment -->|Cancel| PaymentDetails
+    ConfirmPayment -->|Confirm| ProcessPayment[Process Payment]
+    ProcessPayment --> UpdateBalance[Update Outstanding Balance]
+    UpdateBalance --> GenerateReceipt[Generate Payment Receipt]
+    GenerateReceipt --> SendReceipt[Send Receipt to<br/>Corporate Admin]
+    SendReceipt --> LogPayment[Log Payment in System]
+    LogPayment --> PaymentSuccess[Payment Recorded]
+    PaymentSuccess --> PaymentDetails
+    
+    PaymentAction -->|View History| ViewHistory[View Payment History]
+    ViewHistory --> PaymentDetails
+    
+    PaymentAction -->|Back| ShowPayments
+    
+    BillingAction -->|Overdue Accounts| OverdueView[Overdue Accounts View]
+    OverdueView --> ShowOverdue[Display Overdue Corporates:<br/>Company, Amount Due,<br/>Days Overdue, Last Contact]
+    ShowOverdue --> OverdueAction{Action}
+    OverdueAction -->|Send Reminder| SelectOverdue[Select Corporate]
+    SelectOverdue --> SendReminder[Send Payment Reminder Email]
+    SendReminder --> LogReminder[Log Reminder Sent]
+    LogReminder --> ShowOverdue
+    OverdueAction -->|Take Action| TakeAction[Select Action:<br/>Suspend, Reduce Limit,<br/>Contact]
+    TakeAction --> ShowOverdue
+    OverdueAction -->|Back| Dashboard
+    
+    BillingAction -->|Export Reports| ExportBilling[Generate Billing Reports]
+    ExportBilling --> SelectReportType{Report Type}
+    SelectReportType -->|Payment Report| PaymentReport[Payment Status Report]
+    SelectReportType -->|Overdue Report| OverdueReport[Overdue Accounts Report]
+    SelectReportType -->|Revenue Report| RevenueReport[Revenue Summary Report]
+    PaymentReport --> DownloadReport[Download Report]
+    OverdueReport --> DownloadReport
+    RevenueReport --> DownloadReport
+    DownloadReport --> Dashboard
+    
+    BillingAction -->|Refresh| Dashboard
+    
+    classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    classDef viewStyle fill:#3498DB,stroke:#2874A6,stroke-width:2px,color:#fff
+    classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
+    classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
+    
+    class Start startStyle
+    class Dashboard,ShowOverview,AllCycles,ShowCycles,CycleList,CycleDetails,ShowCycleDetail,PaymentMgmt,ShowPayments,PaymentDetails,ShowPaymentInfo,OverdueView,ShowOverdue,ViewHistory viewStyle
+    class SelectCycle,GenerateStmt,CreatePDF,SendStatement,SelectPayment,RecordForm,EnterAmount,EnterMethod,EnterDate,EnterRef,ReviewPayment,ProcessPayment,UpdateBalance,GenerateReceipt,SendReceipt,LogPayment,SelectOverdue,SendReminder,LogReminder,TakeAction,ExportBilling,PaymentReport,OverdueReport,RevenueReport,CycleFilter processStyle
+    class BillingAction,CycleAction,PaymentAction,ConfirmPayment,OverdueAction,SelectReportType decisionStyle
+    class StmtSent,PaymentSuccess,DownloadReport successStyle
+```
+#### MO Flow 4: MO Admin Dispute Management
+
+```mermaid
+flowchart TD
+    Start([MO Admin Portal]) --> Dashboard[Dispute Management Dashboard]
+    
+    Dashboard --> ShowOverview[Display Overview:<br/>Total Disputes Across Portfolio<br/>Recent Dispute Activity<br/>High Dispute Rate Accounts]
+    
+    ShowOverview --> Action{Choose Action}
+    
+    Action -->|View All Disputes| AllDisputes[All Disputes View]
+    AllDisputes --> ShowAllDisputes[Display All Disputes<br/>Across All Corporate Accounts]
+    ShowAllDisputes --> FilterDisputes[Filter by:<br/>Corporate Account<br/>Date Range<br/>Amount]
+    FilterDisputes --> DisputeList[View Filtered List]
+    DisputeList --> SelectDisputeAction{Action}
+    SelectDisputeAction -->|View Details| ViewDisputeDetail[View Dispute Details:<br/>Corporate, Employee,<br/>Transaction, Reason, Credit]
+    ViewDisputeDetail --> DisputeList
+    SelectDisputeAction -->|Back| Dashboard
+    
+    Action -->|Disputes by Corporate| SelectCorporate[Select Corporate Account]
+    SelectCorporate --> CorporateDisputes[Corporate Dispute History]
+    CorporateDisputes --> ShowCorpDisputes[Display:<br/>All Disputes for Corporate<br/>Total Credits Applied<br/>Dispute Frequency]
+    ShowCorpDisputes --> CorpDisputeAction{Action}
+    CorpDisputeAction -->|View Details| ViewCorpDispute[View Dispute Details]
+    ViewCorpDispute --> CorporateDisputes
+    CorpDisputeAction -->|Back| Dashboard
+    
+    Action -->|Export Reports| ExportReports[Generate Reports]
+    ExportReports --> SelectReport{Report Type}
+    SelectReport -->|Dispute Summary| DisputeReport[Dispute Summary Report]
+    SelectReport -->|Corporate Analysis| CorpReport[Corporate Dispute Analysis]
+    DisputeReport --> DownloadReport[Download Report]
+    CorpReport --> DownloadReport
+    DownloadReport --> Dashboard
+    
+    Dashboard --> AutoNote[Note: System automatically:<br/>- Applies credits for all disputes<br/>- Tracks dispute patterns<br/>- Updates Corporate Trust Score<br/>- Sends alerts for unusual activity]
+    
+    classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    classDef viewStyle fill:#3498DB,stroke:#2874A6,stroke-width:2px,color:#fff
+    classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
+    classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
+    classDef noteStyle fill:#E67E22,stroke:#CA6F1E,stroke-width:2px,color:#fff
+    
+    class Start startStyle
+    class Dashboard,ShowOverview,AllDisputes,ShowAllDisputes,CorporateDisputes viewStyle
+    class FilterDisputes,SelectCorporate,ViewDisputeDetail,ViewCorpDispute,ExportReports,DisputeReport,CorpReport processStyle
+    class Action,SelectDisputeAction,CorpDisputeAction,SelectReport decisionStyle
+    class DownloadReport successStyle
+    class AutoNote noteStyle
+```
+#### MO Flow 5: Employee & Group Oversight
+```Mermaid
+flowchart TD
+    Start([MO Admin Portal]) --> Dashboard[Corporate Account Details]
+    
+    Dashboard --> ViewOption{Choose View}
+    
+    ViewOption -->|View Employees| EmployeeView[Employee Management View]
+    EmployeeView --> ShowEmployees[Display All Employees<br/>for Corporate:<br/>Name, Status, Group,<br/>Spending, Activation Date]
+    
+    ShowEmployees --> EmpAction{Choose Action}
+    
+    EmpAction -->|View Details| SelectEmployee[Select Employee]
+    SelectEmployee --> EmployeeDetails[Employee Details Page]
+    EmployeeDetails --> ShowEmpDetail[Display:<br/>- Personal Information<br/>- Corporate mPass Status<br/>- User Group<br/>- Transaction History<br/>- Total Spending<br/>- Applied Policies]
+    ShowEmpDetail --> EmpDetailAction{Action}
+    
+    EmpDetailAction -->|View Transactions| ViewEmpTrans[View Employee Transactions]
+    ViewEmpTrans --> EmployeeDetails
+    
+    EmpDetailAction -->|Suspend mPass| SuspendForm[Suspend Employee Form]
+    SuspendForm --> EnterSuspendReason[Enter Suspension Reason]
+    EnterSuspendReason --> ConfirmSuspend{Confirm?}
+    ConfirmSuspend -->|Cancel| EmployeeDetails
+    ConfirmSuspend -->|Confirm| ProcessSuspend[Suspend Employee mPass]
+    ProcessSuspend --> NotifyEmployee[Notify Employee & Admin]
+    NotifyEmployee --> SuspendSuccess[Employee Suspended]
+    SuspendSuccess --> EmployeeDetails
+    
+    EmpDetailAction -->|Back| ShowEmployees
+    
+    EmpAction -->|Filter/Search| FilterEmployees[Apply Filters:<br/>Status, Group, Spending]
+    FilterEmployees --> ShowEmployees
+    
+    EmpAction -->|Export| ExportEmployees[Export Employee List]
+    ExportEmployees --> DownloadEmp[Download Report]
+    DownloadEmp --> ShowEmployees
+    
+    EmpAction -->|Back| Dashboard
+    
+    ViewOption -->|View Groups| GroupView[User Group View]
+    GroupView --> ShowGroups[Display All User Groups<br/>for Corporate:<br/>Group Name, Member Count,<br/>Total Spending, Policies]
+    
+    ShowGroups --> GroupAction{Choose Action}
+    
+    GroupAction -->|View Details| SelectGroup[Select User Group]
+    SelectGroup --> GroupDetails[User Group Details Page]
+    GroupDetails --> ShowGroupDetail[Display:<br/>- Group Name<br/>- Member List<br/>- Group Policies<br/>- Total Spending<br/>- Spending by Member<br/>- Transaction Summary]
+    ShowGroupDetail --> GroupDetailAction{Action}
+    
+    GroupDetailAction -->|View Members| ViewMembers[View All Group Members]
+    ViewMembers --> GroupDetails
+    
+    GroupDetailAction -->|View Spending| ViewGroupSpending[View Spending Analysis:<br/>- By Service<br/>- By Member<br/>- Trends]
+    ViewGroupSpending --> GroupDetails
+    
+    GroupDetailAction -->|Back| ShowGroups
+    
+    GroupAction -->|Filter| FilterGroups[Filter by:<br/>Member Count, Spending]
+    FilterGroups --> ShowGroups
+    
+    GroupAction -->|Export| ExportGroups[Export Group List]
+    ExportGroups --> DownloadGroup[Download Report]
+    DownloadGroup --> ShowGroups
+    
+    GroupAction -->|Back| Dashboard
+    
+    Dashboard --> OverviewNote[Note: This view is accessed from<br/>Corporate Account Details page.<br/>Provides oversight of corporate's<br/>organizational structure and usage.]
+    
+    classDef startStyle fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    classDef viewStyle fill:#3498DB,stroke:#2874A6,stroke-width:2px,color:#fff
+    classDef processStyle fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#fff
+    classDef decisionStyle fill:#F39C12,stroke:#D68910,stroke-width:2px,color:#fff
+    classDef successStyle fill:#27AE60,stroke:#1E8449,stroke-width:2px,color:#fff
+    classDef noteStyle fill:#E67E22,stroke:#CA6F1E,stroke-width:2px,color:#fff
+    
+    class Start startStyle
+    class Dashboard,EmployeeView,ShowEmployees,EmployeeDetails,ShowEmpDetail,ViewEmpTrans,GroupView,ShowGroups,GroupDetails,ShowGroupDetail,ViewMembers,ViewGroupSpending viewStyle
+    class SelectEmployee,SuspendForm,EnterSuspendReason,ProcessSuspend,NotifyEmployee,FilterEmployees,ExportEmployees,SelectGroup,FilterGroups,ExportGroups processStyle
+    class ViewOption,EmpAction,EmpDetailAction,ConfirmSuspend,GroupAction,GroupDetailAction decisionStyle
+    class SuspendSuccess,DownloadEmp,DownloadGroup successStyle
+    class OverviewNote noteStyle
 ```
 
 ## 5. Wireframes
@@ -681,18 +1386,44 @@ This section provides low-fidelity wireframes for the key screens and interactiv
 | -> Policy Mgmt    |--------------------------------------------------------------------|
 | -> Billing        |                                                                    |
 | -> Disputes       |  [User Data Table]                                                 |
-| -> Settings       |  +----------+----------------------+----------+----------+--------+ |
-|                   |  | Name     | Email                | Status   | Groups   | Action | |
-| [User Profile]    |  +----------+----------------------+----------+----------+--------+ |
-| [Logout]          |  | John S.  | john.s@...           | [Active] | Sales    | [...]  | |
-|                   |  | Jane D.  | jane.d@...           | [Active] | Mrkt, Dev| [...]  | |
-|                   |  | Pat J.   | pat.j@...            | [Pending]|          | [...]  | |
-|                   |  +----------+----------------------+----------+----------+--------+ |
+| -> Settings       |  +----------+----------------------+----------+----------+-------------------------------------------------+ |
+|                   |  | Name     | Email                | Status   | Groups   | Action                                          | |
+| [User Profile]    |  +----------+----------------------+----------+----------+-------------------------------------------------+ |
+| [Logout]          |  | John S.  | john.s@...           | [Active] | Sales    | [View Details] [Suspend]                        | |
+|                   |  | Jane D.  | jane.d@...           | [Active] | Mrkt, Dev| [View Details] [Suspend]                        | |
+|                   |  | Pat J.   | pat.j@...            | [Pending]|          | [View Details] [Resend Invite] [Cancel Invite]  | |
+|                   |  +----------+----------------------+----------+----------+-------------------------------------------------+ |
 |                   |                                         [Pagination: 1 2 3 ... 10] |
 +--------------------------------------------------------------------------------------+
 ```
 
 ### 5.3. User Management Modals & Pages
+
+#### Wireframe: User Detail Page
+
+-   **Purpose**: To provide a comprehensive, read-only view of an employee's status, permissions, and activity, as well as a launch point for individual actions.
+-   **Layout**: A two-column layout with summary information on the left and detailed activity logs in a tabbed interface on the right.
+
+```
++--------------------------------------------------------------------------------------+
+| [Logo]            | [Header: User Details]                                             |
+|                   |  < Back to User Management                                         |
+|-------------------|--------------------------------------------------------------------|
+| NAVIGATION        |  [Section: John Smith] [Status: Active]                            |
+| (...)             |   john.smith@company.com                                           |
+|                   |   Member Since: Oct 22, 2024                                       |
+|                   |                                    [ Suspend User ] [ Edit User ]  |
+|                   |--------------------------------------------------------------------|
+|                   |                                                                    |
+|                   |  [Card: Groups (1)]         |   [  Transactions  ] [  Policy  ]      |
+|                   |   - Sales                   |------------------------------------|
+|                   |                             |                                    |
+|                   |  [Card: MTD Spend]          |   [Transaction History Table]      |
+|                   |   - $450.00 / $1000.00      |   List of recent transactions...   |
+|                   |                             |                                    |
+|                   |                             |                                    |
++--------------------------------------------------------------------------------------+
+```
 
 #### Wireframe: Invite Employee Modal (Single)
 
@@ -747,8 +1478,35 @@ This section provides low-fidelity wireframes for the key screens and interactiv
 | -> ...            |                                                                    |
 |                   |  [Card: Engineering]     [Card: Marketing]     [Card: Sales]       |
 |                   |   - 75 Members           - 22 Members          - 35 Members        |
-|                   |   - Policy: Custom       - Policy: Default     - Policy: Custom    |
+|                   |   - Policy: Default     - Policy: Custom    |
 |                   |   - [...]                - [...]               - [...]             |
+|                   |                                                                    |
++--------------------------------------------------------------------------------------+
+```
+
+#### Wireframe: User Group Detail Page
+
+-   **Purpose**: To provide a detailed view of a specific group, its members, its assigned policies, and its spending activity. This is the admin's primary interface for managing a department.
+-   **Layout**: A summary header with key stats and a tabbed interface to switch between managing members and managing the group's policy.
+
+```
++--------------------------------------------------------------------------------------+
+| [Logo]            | [Header: Group Details]                                            |
+|                   |  < Back to User Groups                                             |
+|-------------------|--------------------------------------------------------------------|
+| NAVIGATION        |  [Section: Engineering] [75 Members]       [ Edit Name ] [ Delete ]|
+| (...)             |--------------------------------------------------------------------|
+|                   |                                                                    |
+|                   |  [Card: Group MTD Spend]    [Card: Group Policy]                   |
+|                   |   - $8,210 / $15,000        - Custom (Inherits 2/3 company rules)  |
+|                   |                                                                    |
+|                   |--------------------------------------------------------------------|
+|                   |                                                                    |
+|                   |  [   Members (75)   ]  [   Group Policy   ]                         |
+|                   |--------------------------------------------------------------------|
+|                   |                                                                    |
+|                   |   [User Data Table for this group]                                 |
+|                   |   Showing members of the Engineering group...                      |
 |                   |                                                                    |
 +--------------------------------------------------------------------------------------+
 ```
@@ -779,7 +1537,7 @@ This section provides low-fidelity wireframes for the key screens and interactiv
 
 #### Wireframe: Policy Management Main Page
 
--   **Purpose**: A unified interface to manage all company-wide, group, and individual policies.
+-   **Purpose**: A unified interface to manage all company-wide, group, and individual policies. Each level includes its own contextual change history.
 -   **Layout**: A tabbed interface to separate the three levels of the policy hierarchy.
 
 ```
@@ -791,9 +1549,9 @@ This section provides low-fidelity wireframes for the key screens and interactiv
 | -> ...            |--------------------------------------------------------------------|
 |                   |                                                                    |
 |                   | [Section: Company-Wide Policy]                                     |
-|                   |  [Card: Global Spending Limit]             ( Edit )                |
+|                   |  [Card: Global Spending Limit]             ( Edit ) ( View History ) |
 |                   |   - Monthly Limit: $50,000                                         |
-|                   |  [Card: Global Service Access]             ( Edit )                |
+|                   |  [Card: Global Service Access]             ( Edit ) ( View History ) |
 |                   |   - Allowed: Business Tools | Blocked: Netflix, Spotify            |
 |                   |                                                                    |
 +--------------------------------------------------------------------------------------+
